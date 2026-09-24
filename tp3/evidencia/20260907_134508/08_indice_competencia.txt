@@ -1,0 +1,17 @@
+BEGIN
+CREATE INDEX
+DO
+COMMIT
+psql:tp3/07_indice_competencia.sql:24: INFO:  analizando «public.producto»
+psql:tp3/07_indice_competencia.sql:24: INFO:  «producto»: se procesaron 1819 de 1819 páginas, que contenían 50000 filas vigentes y 0 filas no vigentes; 30000 filas en la muestra, 50000 total de filas estimadas
+psql:tp3/07_indice_competencia.sql:24: INFO:  finished analyzing table "food_store_tp3_competencia.public.producto"
+tasa lectura promedio: 0.125 MB/s, tasa escritura promedio: 0.146 MB/s
+uso de búfers: 2198 aciertos, 6 fallos, 7 ensuciados
+uso de WAL: 24 registros, 6 imágenes de página completa, 36164 bytes, 0 búfers llenos
+uso de sistema: CPU: usuario: 0.37 s, sistema: 0.00 s, transcurrido: 0.37 s
+ANALYZE
+                                                                          definicion_indice                                                                          
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ CREATE INDEX idx_tp3_comp_producto_precio_activo ON public.producto USING btree (precio_lista DESC, id_producto) INCLUDE (id_categoria, nombre, stock) WHERE activo
+(1 row)
+

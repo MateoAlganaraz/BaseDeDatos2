@@ -1,0 +1,60 @@
+                                                                   QUERY PLAN                                                                    
+-------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=35.45..35.47 rows=8 width=25) (actual time=2.905..2.905 rows=8.00 loops=1)
+   Sort Key: id_pedido
+   Sort Method: quicksort  Memory: 25kB
+   Buffers: shared hit=6 read=11
+   ->  Bitmap Heap Scan on detalle_pedido det  (cost=4.48..35.33 rows=8 width=25) (actual time=1.005..2.875 rows=8.00 loops=1)
+         Recheck Cond: (id_producto = 100001)
+         Heap Blocks: exact=8
+         Buffers: shared hit=3 read=11
+         ->  Bitmap Index Scan on idx_tp5_detalle_producto_pedido  (cost=0.00..4.48 rows=8 width=0) (actual time=0.326..0.326 rows=8.00 loops=1)
+               Index Cond: (id_producto = 100001)
+               Index Searches: 1
+               Buffers: shared hit=3 read=3
+ Planning:
+   Buffers: shared hit=100 read=5
+ Planning Time: 3.382 ms
+ Execution Time: 2.958 ms
+(16 rows)
+
+                                                                                    QUERY PLAN                                                                                    
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1594.28..1594.53 rows=100 width=47) (actual time=5.153..5.160 rows=100.00 loops=1)
+   Buffers: shared hit=3 read=31
+   ->  Sort  (cost=1594.28..1596.68 rows=960 width=47) (actual time=5.151..5.153 rows=100.00 loops=1)
+         Sort Key: nombre
+         Sort Method: top-N heapsort  Memory: 32kB
+         Buffers: shared hit=3 read=31
+         ->  Index Only Scan using idx_tp5_producto_nombre_activo_prefijo on producto prod  (cost=0.41..1557.59 rows=960 width=47) (actual time=1.719..4.167 rows=950.00 loops=1)
+               Index Cond: ((nombre ~>=~ 'TP3_SB2026TP3_PRODUCTO_049'::text) AND (nombre ~<~ 'TP3_SB2026TP3_PRODUCTO_04:'::text))
+               Filter: ((nombre)::text ~~ 'TP3\_SB2026TP3\_PRODUCTO\_049%'::text)
+               Heap Fetches: 950
+               Index Searches: 1
+               Buffers: shared read=31
+ Planning:
+   Buffers: shared hit=166 read=12
+ Planning Time: 9.690 ms
+ Execution Time: 5.184 ms
+(16 rows)
+
+                                                                             QUERY PLAN                                                                              
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=8.44..8.45 rows=2 width=74) (actual time=3.310..3.319 rows=100.00 loops=1)
+   Buffers: shared read=8
+   ->  Sort  (cost=8.44..8.45 rows=2 width=74) (actual time=3.310..3.313 rows=100.00 loops=1)
+         Sort Key: apellido
+         Sort Method: quicksort  Memory: 38kB
+         Buffers: shared read=8
+         ->  Index Only Scan using idx_tp5_cliente_apellido_prefijo on cliente cli  (cost=0.41..8.43 rows=2 width=74) (actual time=1.068..3.263 rows=100.00 loops=1)
+               Index Cond: ((apellido ~>=~ 'TP3019'::text) AND (apellido ~<~ 'TP301:'::text))
+               Filter: ((apellido)::text ~~ 'TP3019%'::text)
+               Heap Fetches: 100
+               Index Searches: 1
+               Buffers: shared read=8
+ Planning:
+   Buffers: shared hit=62 read=5
+ Planning Time: 3.926 ms
+ Execution Time: 3.335 ms
+(16 rows)
+

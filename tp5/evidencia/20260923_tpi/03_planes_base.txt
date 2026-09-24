@@ -1,0 +1,56 @@
+                                                                QUERY PLAN                                                                
+------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=6900.10..6900.12 rows=8 width=25) (actual time=87.863..92.102 rows=8.00 loops=1)
+   Sort Key: id_pedido
+   Sort Method: quicksort  Memory: 25kB
+   Buffers: shared hit=3 read=2950 dirtied=5
+   ->  Gather  (cost=1000.00..6899.98 rows=8 width=25) (actual time=0.998..92.060 rows=8.00 loops=1)
+         Workers Planned: 1
+         Workers Launched: 1
+         Buffers: shared read=2950 dirtied=5
+         ->  Parallel Seq Scan on detalle_pedido det  (cost=0.00..5899.18 rows=5 width=25) (actual time=24.990..68.313 rows=4.00 loops=2)
+               Filter: (id_producto = 100001)
+               Rows Removed by Filter: 199996
+               Buffers: shared read=2950 dirtied=5
+ Planning:
+   Buffers: shared hit=79 read=4
+ Planning Time: 2.233 ms
+ Execution Time: 92.165 ms
+(16 rows)
+
+                                                           QUERY PLAN                                                           
+--------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=2480.65..2480.90 rows=100 width=47) (actual time=45.857..45.866 rows=100.00 loops=1)
+   Buffers: shared hit=3 read=1819
+   ->  Sort  (cost=2480.65..2483.05 rows=959 width=47) (actual time=45.854..45.858 rows=100.00 loops=1)
+         Sort Key: nombre
+         Sort Method: top-N heapsort  Memory: 32kB
+         Buffers: shared hit=3 read=1819
+         ->  Seq Scan on producto prod  (cost=0.00..2444.00 rows=959 width=47) (actual time=44.772..44.950 rows=950.00 loops=1)
+               Filter: (activo AND ((nombre)::text ~~ 'TP3\_SB2026TP3\_PRODUCTO\_049%'::text))
+               Rows Removed by Filter: 49050
+               Buffers: shared read=1819
+ Planning:
+   Buffers: shared hit=94 read=5
+ Planning Time: 3.893 ms
+ Execution Time: 45.890 ms
+(14 rows)
+
+                                                        QUERY PLAN                                                        
+--------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=866.01..866.01 rows=2 width=74) (actual time=15.462..15.470 rows=100.00 loops=1)
+   Buffers: shared read=616
+   ->  Sort  (cost=866.01..866.01 rows=2 width=74) (actual time=15.461..15.464 rows=100.00 loops=1)
+         Sort Key: apellido
+         Sort Method: quicksort  Memory: 38kB
+         Buffers: shared read=616
+         ->  Seq Scan on cliente cli  (cost=0.00..866.00 rows=2 width=74) (actual time=8.705..15.413 rows=100.00 loops=1)
+               Filter: ((apellido)::text ~~ 'TP3019%'::text)
+               Rows Removed by Filter: 19900
+               Buffers: shared read=616
+ Planning:
+   Buffers: shared hit=42 read=3
+ Planning Time: 3.375 ms
+ Execution Time: 15.491 ms
+(14 rows)
+

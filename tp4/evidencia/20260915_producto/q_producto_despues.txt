@@ -1,0 +1,43 @@
+                                                                                      QUERY PLAN                                                                                      
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=121.00..121.26 rows=8 width=304) (actual time=0.328..0.334 rows=7.00 loops=1)
+   Group Key: (date_trunc('month'::text, ped.fecha)), cat.nombre
+   Buffers: shared hit=54 read=3
+   ->  Sort  (cost=121.00..121.02 rows=8 width=273) (actual time=0.305..0.307 rows=8.00 loops=1)
+         Sort Key: (date_trunc('month'::text, ped.fecha)) DESC, cat.nombre
+         Sort Method: quicksort  Memory: 25kB
+         Buffers: shared hit=54 read=3
+         ->  Nested Loop  (cost=1.27..120.88 rows=8 width=273) (actual time=0.126..0.237 rows=8.00 loops=1)
+               Buffers: shared hit=48 read=3
+               ->  Nested Loop  (cost=0.85..53.36 rows=8 width=273) (actual time=0.111..0.149 rows=8.00 loops=1)
+                     Buffers: shared hit=16 read=3
+                     ->  Index Only Scan using idx_tp4_detalle_producto_pedido on detalle_pedido det  (cost=0.42..36.47 rows=8 width=25) (actual time=0.071..0.105 rows=8.00 loops=1)
+                           Index Cond: (id_producto = 100001)
+                           Heap Fetches: 8
+                           Index Searches: 1
+                           Buffers: shared hit=11 read=3
+                     ->  Materialize  (cost=0.43..16.79 rows=1 width=256) (actual time=0.005..0.005 rows=1.00 loops=8)
+                           Storage: Memory  Maximum Storage: 17kB
+                           Buffers: shared hit=5
+                           ->  Nested Loop  (cost=0.43..16.78 rows=1 width=256) (actual time=0.035..0.036 rows=1.00 loops=1)
+                                 Buffers: shared hit=5
+                                 ->  Index Scan using producto_pkey on producto p  (cost=0.29..8.31 rows=1 width=46) (actual time=0.023..0.024 rows=1.00 loops=1)
+                                       Index Cond: (id_producto = 100001)
+                                       Filter: activo
+                                       Index Searches: 1
+                                       Buffers: shared hit=3
+                                 ->  Index Scan using categoria_pkey on categoria cat  (cost=0.14..8.16 rows=1 width=226) (actual time=0.010..0.011 rows=1.00 loops=1)
+                                       Index Cond: (id_categoria = p.id_categoria)
+                                       Filter: activo
+                                       Index Searches: 1
+                                       Buffers: shared hit=2
+               ->  Index Scan using pedido_pkey on pedido ped  (cost=0.42..8.44 rows=1 width=16) (actual time=0.010..0.010 rows=1.00 loops=8)
+                     Index Cond: (id_pedido = det.id_pedido)
+                     Index Searches: 8
+                     Buffers: shared hit=32
+ Planning:
+   Buffers: shared hit=394 read=1
+ Planning Time: 10.528 ms
+ Execution Time: 0.460 ms
+(39 rows)
+

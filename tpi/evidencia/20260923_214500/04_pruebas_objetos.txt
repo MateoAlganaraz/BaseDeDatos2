@@ -1,0 +1,13 @@
+BEGIN
+DO
+   resultado    |                                   alcance                                    
+----------------+------------------------------------------------------------------------------
+ PRUEBAS_TPI_OK | CHECK, procedimiento, atomicidad, trigger, auditoria y soft delete validados
+(1 row)
+
+       control        | procedimientos | triggers | vistas 
+----------------------+----------------+----------+--------
+ objetos_programables |              2 |        2 |      2
+(1 row)
+
+ROLLBACK

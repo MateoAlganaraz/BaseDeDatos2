@@ -1,0 +1,29 @@
+      base_conectada      | rol_conectado |                           version_postgresql                            |           instante            
+--------------------------+---------------+-------------------------------------------------------------------------+-------------------------------
+ food_store_tp4_analitica | postgres      | PostgreSQL 18.4 on x86_64-windows, compiled by msvc-19.44.35227, 64-bit | 2026-09-15 20:53:05.111554-03
+(1 row)
+
+     tabla      | filas_estimadas 
+----------------+-----------------
+ categoria      |              -1
+ cliente        |           20000
+ detalle_pedido |          400000
+ pedido         |          200000
+ producto       |           50000
+(5 rows)
+
+ schemaname |   tablename    |                indexname                 |                                                                     indexdef                                                                     
+------------+----------------+------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------
+ public     | categoria      | categoria_pkey                           | CREATE UNIQUE INDEX categoria_pkey ON public.categoria USING btree (id_categoria)
+ public     | cliente        | cliente_email_key                        | CREATE UNIQUE INDEX cliente_email_key ON public.cliente USING btree (email)
+ public     | cliente        | cliente_pkey                             | CREATE UNIQUE INDEX cliente_pkey ON public.cliente USING btree (id_cliente)
+ public     | detalle_pedido | pk_detalle_pedido                        | CREATE UNIQUE INDEX pk_detalle_pedido ON public.detalle_pedido USING btree (id_pedido, id_producto)
+ public     | pedido         | idx_pedido_cliente_fecha                 | CREATE INDEX idx_pedido_cliente_fecha ON public.pedido USING btree (id_cliente, fecha DESC)
+ public     | pedido         | idx_tp3_pedido_fecha                     | CREATE INDEX idx_tp3_pedido_fecha ON public.pedido USING btree (fecha)
+ public     | pedido         | idx_tp3_pedido_forma_pago_fecha          | CREATE INDEX idx_tp3_pedido_forma_pago_fecha ON public.pedido USING btree (forma_pago, fecha DESC)
+ public     | pedido         | pedido_pkey                              | CREATE UNIQUE INDEX pedido_pkey ON public.pedido USING btree (id_pedido)
+ public     | producto       | idx_producto_categoria_activo            | CREATE INDEX idx_producto_categoria_activo ON public.producto USING btree (id_categoria, activo)
+ public     | producto       | idx_tp3_producto_categoria_precio_activo | CREATE INDEX idx_tp3_producto_categoria_precio_activo ON public.producto USING btree (id_categoria, precio_lista DESC, id_producto) WHERE activo
+ public     | producto       | producto_pkey                            | CREATE UNIQUE INDEX producto_pkey ON public.producto USING btree (id_producto)
+(11 rows)
+

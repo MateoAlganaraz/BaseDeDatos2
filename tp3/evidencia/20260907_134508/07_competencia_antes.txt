@@ -1,0 +1,27 @@
+                                                              QUERY PLAN                                                              
+--------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=3272.10..3272.35 rows=100 width=265) (actual time=22.207..22.215 rows=100.00 loops=1)
+   Buffers: shared hit=6 read=1820
+   ->  Sort  (cost=3272.10..3311.66 rows=15826 width=265) (actual time=22.206..22.210 rows=100.00 loops=1)
+         Sort Key: p.precio_lista DESC, p.id_producto
+         Sort Method: top-N heapsort  Memory: 48kB
+         Buffers: shared hit=6 read=1820
+         ->  Hash Join  (cost=11.62..2667.24 rows=15826 width=265) (actual time=4.604..17.612 rows=31669.00 loops=1)
+               Hash Cond: (p.id_categoria = c.id_categoria)
+               Buffers: shared read=1820
+               ->  Seq Scan on producto p  (cost=0.00..2569.00 rows=31652 width=55) (actual time=3.904..12.460 rows=31669.00 loops=1)
+                     Filter: (activo AND (precio_lista >= '1500'::numeric) AND (precio_lista <= '4500'::numeric))
+                     Rows Removed by Filter: 18331
+                     Buffers: shared read=1819
+               ->  Hash  (cost=11.00..11.00 rows=50 width=226) (actual time=0.677..0.677 rows=5.00 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                     Buffers: shared read=1
+                     ->  Seq Scan on categoria c  (cost=0.00..11.00 rows=50 width=226) (actual time=0.666..0.668 rows=5.00 loops=1)
+                           Filter: activo
+                           Buffers: shared read=1
+ Planning:
+   Buffers: shared hit=167 read=2 dirtied=2
+ Planning Time: 2.832 ms
+ Execution Time: 22.246 ms
+(23 rows)
+

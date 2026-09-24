@@ -1,0 +1,13 @@
+BEGIN
+ALTER TABLE
+ALTER TABLE
+ control | nombre 
+---------+--------
+(0 rows)
+
+DO
+ALTER TABLE
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+COMMIT

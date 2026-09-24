@@ -1,0 +1,9 @@
+BEGIN
+SELECT 600
+ filas_preparadas 
+------------------
+              600
+(1 row)
+
+INSERT 0 600
+ROLLBACK

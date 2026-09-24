@@ -1,0 +1,33 @@
+       base_laboratorio        | usuario  |                           version_postgresql                            
+-------------------------------+----------+-------------------------------------------------------------------------
+ food_store_tp5_indices_vistas | postgres | PostgreSQL 18.4 on x86_64-windows, compiled by msvc-19.44.35227, 64-bit
+(1 row)
+
+     tabla      | filas_estimadas | tamano_total 
+----------------+-----------------+--------------
+ categoria      |              -1 | 32 kB
+ cliente        |           20000 | 11 MB
+ detalle_pedido |          400000 | 60 MB
+ pedido         |          200000 | 71 MB
+ producto       |           50000 | 24 MB
+(5 rows)
+
+            tablename             |                indexname                 |                                                                               indexdef                                                                               
+----------------------------------+------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ categoria                        | categoria_pkey                           | CREATE UNIQUE INDEX categoria_pkey ON public.categoria USING btree (id_categoria)
+ cliente                          | cliente_email_key                        | CREATE UNIQUE INDEX cliente_email_key ON public.cliente USING btree (email)
+ cliente                          | cliente_pkey                             | CREATE UNIQUE INDEX cliente_pkey ON public.cliente USING btree (id_cliente)
+ cliente                          | idx_tp5_cliente_apellido_prefijo         | CREATE INDEX idx_tp5_cliente_apellido_prefijo ON public.cliente USING btree (apellido text_pattern_ops) INCLUDE (id_cliente, nombre, email)
+ detalle_pedido                   | idx_tp5_detalle_producto_pedido          | CREATE INDEX idx_tp5_detalle_producto_pedido ON public.detalle_pedido USING btree (id_producto, id_pedido) INCLUDE (cantidad, precio_unitario)
+ detalle_pedido                   | pk_detalle_pedido                        | CREATE UNIQUE INDEX pk_detalle_pedido ON public.detalle_pedido USING btree (id_pedido, id_producto)
+ mv_tp5_facturacion_categoria_mes | idx_mv_tp5_facturacion_categoria_mes     | CREATE UNIQUE INDEX idx_mv_tp5_facturacion_categoria_mes ON public.mv_tp5_facturacion_categoria_mes USING btree (mes, id_categoria)
+ pedido                           | idx_pedido_cliente_fecha                 | CREATE INDEX idx_pedido_cliente_fecha ON public.pedido USING btree (id_cliente, fecha DESC)
+ pedido                           | idx_tp3_pedido_fecha                     | CREATE INDEX idx_tp3_pedido_fecha ON public.pedido USING btree (fecha)
+ pedido                           | idx_tp3_pedido_forma_pago_fecha          | CREATE INDEX idx_tp3_pedido_forma_pago_fecha ON public.pedido USING btree (forma_pago, fecha DESC)
+ pedido                           | pedido_pkey                              | CREATE UNIQUE INDEX pedido_pkey ON public.pedido USING btree (id_pedido)
+ producto                         | idx_producto_categoria_activo            | CREATE INDEX idx_producto_categoria_activo ON public.producto USING btree (id_categoria, activo)
+ producto                         | idx_tp3_producto_categoria_precio_activo | CREATE INDEX idx_tp3_producto_categoria_precio_activo ON public.producto USING btree (id_categoria, precio_lista DESC, id_producto) WHERE activo
+ producto                         | idx_tp5_producto_nombre_activo_prefijo   | CREATE INDEX idx_tp5_producto_nombre_activo_prefijo ON public.producto USING btree (nombre text_pattern_ops) INCLUDE (id_producto, precio_lista, stock) WHERE activo
+ producto                         | producto_pkey                            | CREATE UNIQUE INDEX producto_pkey ON public.producto USING btree (id_producto)
+(15 rows)
+

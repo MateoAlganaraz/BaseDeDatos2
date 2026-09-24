@@ -1,0 +1,15 @@
+SET
+DO
+        control         | filas_distintas 
+------------------------+-----------------
+ spec_1_ia_menos_propia |               0
+ spec_1_propia_menos_ia |               0
+ spec_2_ia_menos_propia |               0
+ spec_2_propia_menos_ia |               0
+(4 rows)
+
+            resultado            
+---------------------------------
+ VALIDACION_COMPLETA_SIN_ERRORES
+(1 row)
+

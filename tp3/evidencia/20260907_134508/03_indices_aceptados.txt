@@ -1,0 +1,29 @@
+BEGIN
+CREATE INDEX
+CREATE INDEX
+CREATE INDEX
+DO
+COMMIT
+psql:tp3/dbeaver/03_indices_aceptados.sql:36: INFO:  analizando «public.producto»
+psql:tp3/dbeaver/03_indices_aceptados.sql:36: INFO:  «producto»: se procesaron 1819 de 1819 páginas, que contenían 50000 filas vigentes y 0 filas no vigentes; 30000 filas en la muestra, 50000 total de filas estimadas
+psql:tp3/dbeaver/03_indices_aceptados.sql:36: INFO:  finished analyzing table "food_store_tp3_mediciones.public.producto"
+tasa lectura promedio: 0.120 MB/s, tasa escritura promedio: 0.100 MB/s
+uso de búfers: 2198 aciertos, 6 fallos, 5 ensuciados
+uso de WAL: 22 registros, 0 imágenes de página completa, 6215 bytes, 0 búfers llenos
+uso de sistema: CPU: usuario: 0.37 s, sistema: 0.00 s, transcurrido: 0.39 s
+ANALYZE
+psql:tp3/dbeaver/03_indices_aceptados.sql:37: INFO:  analizando «public.pedido»
+psql:tp3/dbeaver/03_indices_aceptados.sql:37: INFO:  «pedido»: se procesaron 2942 de 2942 páginas, que contenían 200000 filas vigentes y 0 filas no vigentes; 30000 filas en la muestra, 200000 total de filas estimadas
+psql:tp3/dbeaver/03_indices_aceptados.sql:37: INFO:  finished analyzing table "food_store_tp3_mediciones.public.pedido"
+tasa lectura promedio: 0.217 MB/s, tasa escritura promedio: 0.000 MB/s
+uso de búfers: 3106 aciertos, 1 fallos, 0 ensuciados
+uso de WAL: 10 registros, 0 imágenes de página completa, 3641 bytes, 0 búfers llenos
+uso de sistema: CPU: usuario: 0.03 s, sistema: 0.00 s, transcurrido: 0.03 s
+ANALYZE
+                  indice                  |                                                                    definicion                                                                    
+------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------
+ idx_tp3_pedido_fecha                     | CREATE INDEX idx_tp3_pedido_fecha ON public.pedido USING btree (fecha)
+ idx_tp3_pedido_forma_pago_fecha          | CREATE INDEX idx_tp3_pedido_forma_pago_fecha ON public.pedido USING btree (forma_pago, fecha DESC)
+ idx_tp3_producto_categoria_precio_activo | CREATE INDEX idx_tp3_producto_categoria_precio_activo ON public.producto USING btree (id_categoria, precio_lista DESC, id_producto) WHERE activo
+(3 rows)
+

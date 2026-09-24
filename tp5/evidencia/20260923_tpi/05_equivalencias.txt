@@ -1,0 +1,24 @@
+           control            | filas_distintas 
+------------------------------+-----------------
+ productos_vista_menos_manual |               0
+ productos_manual_menos_vista |               0
+(2 rows)
+
+          control           | filas_distintas 
+----------------------------+-----------------
+ pedidos_vista_menos_manual |               0
+ pedidos_manual_menos_vista |               0
+(2 rows)
+
+          control           | filas_distintas 
+----------------------------+-----------------
+ detalle_vista_menos_manual |               0
+ detalle_manual_menos_vista |               0
+(2 rows)
+
+           control           | filas_distintas 
+-----------------------------+-----------------
+ clientes_vista_menos_manual |               0
+ clientes_manual_menos_vista |               0
+(2 rows)
+

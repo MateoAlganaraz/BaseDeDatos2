@@ -1,0 +1,46 @@
+                                                                                 QUERY PLAN                                                                                  
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=6943.14..6943.40 rows=8 width=304) (actual time=60.584..64.818 rows=7.00 loops=1)
+   Group Key: (date_trunc('month'::text, ped.fecha)), cat.nombre
+   Buffers: shared hit=2090 read=898 written=805
+   ->  Sort  (cost=6943.14..6943.16 rows=8 width=273) (actual time=60.538..64.765 rows=8.00 loops=1)
+         Sort Key: (date_trunc('month'::text, ped.fecha)) DESC, cat.nombre
+         Sort Method: quicksort  Memory: 25kB
+         Buffers: shared hit=2090 read=898 written=805
+         ->  Gather  (cost=1000.85..6943.02 rows=8 width=273) (actual time=0.798..64.667 rows=8.00 loops=1)
+               Workers Planned: 1
+               Workers Launched: 1
+               Buffers: shared hit=2084 read=898 written=805
+               ->  Nested Loop  (cost=0.85..5942.22 rows=5 width=273) (actual time=0.125..21.526 rows=4.00 loops=2)
+                     Buffers: shared hit=2084 read=898 written=805
+                     ->  Nested Loop  (cost=0.43..5900.02 rows=5 width=273) (actual time=0.112..21.366 rows=4.00 loops=2)
+                           Buffers: shared hit=2052 read=898 written=805
+                           ->  Parallel Seq Scan on detalle_pedido det  (cost=0.00..5883.18 rows=5 width=25) (actual time=0.016..21.245 rows=4.00 loops=2)
+                                 Filter: (id_producto = 100001)
+                                 Rows Removed by Filter: 199996
+                                 Buffers: shared hit=2049 read=893 written=805
+                           ->  Materialize  (cost=0.43..16.79 rows=1 width=256) (actual time=0.025..0.025 rows=1.00 loops=8)
+                                 Storage: Memory  Maximum Storage: 17kB
+                                 Buffers: shared hit=3 read=5
+                                 ->  Nested Loop  (cost=0.43..16.78 rows=1 width=256) (actual time=0.185..0.187 rows=1.00 loops=1)
+                                       Buffers: shared hit=3 read=5
+                                       ->  Index Scan using producto_pkey on producto p  (cost=0.29..8.31 rows=1 width=46) (actual time=0.111..0.112 rows=1.00 loops=1)
+                                             Index Cond: (id_producto = 100001)
+                                             Filter: activo
+                                             Index Searches: 1
+                                             Buffers: shared hit=3 read=3
+                                       ->  Index Scan using categoria_pkey on categoria cat  (cost=0.14..8.16 rows=1 width=226) (actual time=0.071..0.071 rows=1.00 loops=1)
+                                             Index Cond: (id_categoria = p.id_categoria)
+                                             Filter: activo
+                                             Index Searches: 1
+                                             Buffers: shared read=2
+                     ->  Index Scan using pedido_pkey on pedido ped  (cost=0.42..8.44 rows=1 width=16) (actual time=0.028..0.028 rows=1.00 loops=8)
+                           Index Cond: (id_pedido = det.id_pedido)
+                           Index Searches: 8
+                           Buffers: shared hit=32
+ Planning:
+   Buffers: shared hit=376 read=7
+ Planning Time: 10.039 ms
+ Execution Time: 65.141 ms
+(42 rows)
+

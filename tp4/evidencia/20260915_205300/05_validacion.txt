@@ -1,0 +1,22 @@
+              indice              |                                                                   definicion                                                                    
+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------
+ idx_tp4_detalle_pedido_cobertura | CREATE INDEX idx_tp4_detalle_pedido_cobertura ON public.detalle_pedido USING btree (id_pedido) INCLUDE (id_producto, cantidad, precio_unitario)
+ idx_tp4_pedido_fecha_id_cliente  | CREATE INDEX idx_tp4_pedido_fecha_id_cliente ON public.pedido USING btree (fecha DESC, id_pedido) INCLUDE (id_cliente)
+(2 rows)
+
+        control         | filas_invalidas 
+------------------------+-----------------
+ producto_sin_categoria |               0
+ pedido_sin_cliente     |               0
+ detalle_sin_producto   |               0
+ detalle_sin_pedido     |               0
+(4 rows)
+
+        control         | filas_distintas 
+------------------------+-----------------
+ spec_1_ia_menos_propia |               0
+ spec_1_propia_menos_ia |               0
+ spec_2_ia_menos_propia |               0
+ spec_2_propia_menos_ia |               0
+(4 rows)
+

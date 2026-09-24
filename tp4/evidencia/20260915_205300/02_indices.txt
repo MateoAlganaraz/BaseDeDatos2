@@ -1,0 +1,15 @@
+BEGIN
+CREATE INDEX
+CREATE INDEX
+COMMIT
+ANALYZE
+ANALYZE
+ANALYZE
+ANALYZE
+ANALYZE
+              indice              |                                                                   definicion                                                                    
+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------
+ idx_tp4_detalle_pedido_cobertura | CREATE INDEX idx_tp4_detalle_pedido_cobertura ON public.detalle_pedido USING btree (id_pedido) INCLUDE (id_producto, cantidad, precio_unitario)
+ idx_tp4_pedido_fecha_id_cliente  | CREATE INDEX idx_tp4_pedido_fecha_id_cliente ON public.pedido USING btree (fecha DESC, id_pedido) INCLUDE (id_cliente)
+(2 rows)
+

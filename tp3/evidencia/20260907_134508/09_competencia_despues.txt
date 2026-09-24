@@ -1,0 +1,27 @@
+                                                                                  QUERY PLAN                                                                                  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=0.57..40.94 rows=100 width=265) (actual time=0.150..0.521 rows=100.00 loops=1)
+   Buffers: shared hit=110 read=5
+   ->  Nested Loop  (cost=0.57..6399.04 rows=15848 width=265) (actual time=0.150..0.514 rows=100.00 loops=1)
+         Buffers: shared hit=110 read=5
+         ->  Index Only Scan using idx_tp3_comp_producto_precio_activo on producto p  (cost=0.41..5610.27 rows=31695 width=55) (actual time=0.109..0.436 rows=100.00 loops=1)
+               Index Cond: ((precio_lista >= '1500'::numeric) AND (precio_lista <= '4500'::numeric))
+               Heap Fetches: 100
+               Index Searches: 1
+               Buffers: shared hit=101 read=4
+         ->  Memoize  (cost=0.15..0.17 rows=1 width=226) (actual time=0.001..0.001 rows=1.00 loops=100)
+               Cache Key: p.id_categoria
+               Cache Mode: logical
+               Hits: 95  Misses: 5  Evictions: 0  Overflows: 0  Memory Usage: 1kB
+               Buffers: shared hit=9 read=1
+               ->  Index Scan using categoria_pkey on categoria c  (cost=0.14..0.16 rows=1 width=226) (actual time=0.008..0.008 rows=1.00 loops=5)
+                     Index Cond: (id_categoria = p.id_categoria)
+                     Filter: activo
+                     Index Searches: 5
+                     Buffers: shared hit=9 read=1
+ Planning:
+   Buffers: shared hit=212 read=1
+ Planning Time: 2.750 ms
+ Execution Time: 0.549 ms
+(23 rows)
+

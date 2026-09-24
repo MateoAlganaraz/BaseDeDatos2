@@ -1,0 +1,51 @@
+SET
+      base_conectada       | rol_conectado |                           version_postgresql                            |      fecha_verificacion       
+---------------------------+---------------+-------------------------------------------------------------------------+-------------------------------
+ food_store_tp3_mediciones | postgres      | PostgreSQL 18.4 on x86_64-windows, compiled by msvc-19.44.35227, 64-bit | 2026-09-07 13:45:08.929355-03
+(1 row)
+
+DO
+        control        | cantidad 
+-----------------------+----------
+ categorias_existentes |        5
+ clientes_existentes   |    20000
+ productos_existentes  |    50000
+ pedidos_existentes    |   200000
+ detalles_existentes   |   400000
+(5 rows)
+
+     tabla      |               restriccion               | contype | convalidated 
+----------------+-----------------------------------------+---------+--------------
+ cliente        | cliente_apellido_not_null               | n       | t
+ cliente        | cliente_email_key                       | u       | t
+ cliente        | cliente_email_not_null                  | n       | t
+ cliente        | cliente_id_cliente_not_null             | n       | t
+ cliente        | cliente_nombre_not_null                 | n       | t
+ cliente        | cliente_pkey                            | p       | t
+ detalle_pedido | ck_detalle_cantidad_positiva            | c       | t
+ detalle_pedido | ck_detalle_precio_no_negativo           | c       | t
+ detalle_pedido | detalle_pedido_cantidad_not_null        | n       | t
+ detalle_pedido | detalle_pedido_id_pedido_not_null       | n       | t
+ detalle_pedido | detalle_pedido_id_producto_not_null     | n       | t
+ detalle_pedido | detalle_pedido_precio_unitario_not_null | n       | t
+ detalle_pedido | fk_detalle_pedido_pedido                | f       | t
+ detalle_pedido | fk_detalle_pedido_producto              | f       | t
+ detalle_pedido | pk_detalle_pedido                       | p       | t
+ pedido         | fk_pedido_cliente                       | f       | t
+ pedido         | pedido_fecha_not_null                   | n       | t
+ pedido         | pedido_forma_pago_not_null              | n       | t
+ pedido         | pedido_id_cliente_not_null              | n       | t
+ pedido         | pedido_id_pedido_not_null               | n       | t
+ pedido         | pedido_pkey                             | p       | t
+ producto       | ck_producto_precio_no_negativo          | c       | t
+ producto       | ck_producto_stock_no_negativo           | c       | t
+ producto       | fk_producto_categoria                   | f       | t
+ producto       | producto_activo_not_null                | n       | t
+ producto       | producto_id_categoria_not_null          | n       | t
+ producto       | producto_id_producto_not_null           | n       | t
+ producto       | producto_nombre_not_null                | n       | t
+ producto       | producto_pkey                           | p       | t
+ producto       | producto_precio_lista_not_null          | n       | t
+ producto       | producto_stock_not_null                 | n       | t
+(31 rows)
+
