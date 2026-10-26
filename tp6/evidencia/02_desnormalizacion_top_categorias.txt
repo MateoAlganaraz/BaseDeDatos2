@@ -1,0 +1,271 @@
+Pager usage is off.
+SET
+psql:tp6/tp_desnormalizacion_top_categorias.sql:35: NOTICE:  column "deleted_at" of relation "pedido" already exists, skipping
+ALTER TABLE
+psql:tp6/tp_desnormalizacion_top_categorias.sql:36: NOTICE:  column "deleted_at" of relation "detalle_pedido" already exists, skipping
+ALTER TABLE
+DROP TABLE
+psql:tp6/tp_desnormalizacion_top_categorias.sql:40: NOTICE:  drop cascades to 3 other objects
+DETAIL:  drop cascades to trigger trg_tp6_resumen_detalle_ins on table detalle_pedido
+drop cascades to trigger trg_tp6_resumen_detalle_upd on table detalle_pedido
+drop cascades to trigger trg_tp6_resumen_detalle_del on table detalle_pedido
+DROP FUNCTION
+psql:tp6/tp_desnormalizacion_top_categorias.sql:41: NOTICE:  drop cascades to trigger trg_tp6_resumen_pedido_upd on table pedido
+DROP FUNCTION
+psql:tp6/tp_desnormalizacion_top_categorias.sql:42: NOTICE:  drop cascades to trigger trg_tp6_resumen_producto_upd on table producto
+DROP FUNCTION
+psql:tp6/tp_desnormalizacion_top_categorias.sql:43: NOTICE:  drop cascades to trigger trg_tp6_resumen_detalle_truncate on table detalle_pedido
+DROP FUNCTION
+DROP FUNCTION
+DROP FUNCTION
+== 5.2(a) Resultado de la consulta original ==
+ categoria | total_vendido 
+-----------+---------------
+ Almacén   |    4087354.00
+ Bebidas   |    2391258.00
+ Golosinas |    2198330.00
+ Mascotas  |    2188757.00
+ Snacks    |    2136491.00
+(5 rows)
+
+== 5.2(a) EXPLAIN ANALYZE de la consulta original (ANTES) ==
+                                                                                           QUERY PLAN                                                                                           
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=16192.86..16192.87 rows=5 width=41) (actual time=30.932..33.100 rows=5 loops=1)
+   Buffers: shared hit=22645 read=810
+   ->  Sort  (cost=16192.86..16192.89 rows=12 width=41) (actual time=30.931..33.098 rows=5 loops=1)
+         Sort Key: (sum(((dp.cantidad)::numeric * dp.precio_unitario))) DESC
+         Sort Method: top-N heapsort  Memory: 25kB
+         Buffers: shared hit=22645 read=810
+         ->  Finalize GroupAggregate  (cost=16176.26..16192.66 rows=12 width=41) (actual time=30.554..33.092 rows=12 loops=1)
+               Group Key: c.nombre
+               Buffers: shared hit=22645 read=810
+               ->  Gather Merge  (cost=16176.26..16192.33 rows=24 width=41) (actual time=30.474..33.073 rows=36 loops=1)
+                     Workers Planned: 2
+                     Workers Launched: 2
+                     Buffers: shared hit=22645 read=810
+                     ->  Partial GroupAggregate  (cost=15176.23..15189.53 rows=12 width=41) (actual time=25.812..26.041 rows=12 loops=3)
+                           Group Key: c.nombre
+                           Buffers: shared hit=22645 read=810
+                           ->  Sort  (cost=15176.23..15178.86 rows=1052 width=18) (actual time=25.750..25.799 rows=1364 loops=3)
+                                 Sort Key: c.nombre
+                                 Sort Method: quicksort  Memory: 216kB
+                                 Buffers: shared hit=22645 read=810
+                                 Worker 0:  Sort Method: quicksort  Memory: 61kB
+                                 Worker 1:  Sort Method: quicksort  Memory: 61kB
+                                 ->  Hash Join  (cost=1.98..15123.43 rows=1052 width=18) (actual time=0.094..25.439 rows=1364 loops=3)
+                                       Hash Cond: (pr.id_categoria = c.id_categoria)
+                                       Buffers: shared hit=22629 read=810
+                                       ->  Nested Loop  (cost=0.71..15118.42 rows=1052 width=17) (actual time=0.060..25.203 rows=1364 loops=3)
+                                             Buffers: shared hit=22596 read=810
+                                             ->  Nested Loop  (cost=0.43..14799.73 rows=1052 width=17) (actual time=0.045..22.543 rows=1364 loops=3)
+                                                   Buffers: shared hit=10321 read=810
+                                                   ->  Parallel Seq Scan on pedido ped  (cost=0.00..10137.00 rows=423 width=8) (actual time=0.030..20.062 rows=548 loops=3)
+                                                         Filter: ((deleted_at IS NULL) AND (fecha >= CURRENT_DATE) AND (fecha < (CURRENT_DATE + 1)))
+                                                         Rows Removed by Filter: 199452
+                                                         Buffers: shared hit=3702 read=810
+                                                   ->  Index Scan using pk_detalle_pedido on detalle_pedido dp  (cost=0.43..10.99 rows=3 width=25) (actual time=0.004..0.004 rows=2 loops=1643)
+                                                         Index Cond: (id_pedido = ped.id_pedido)
+                                                         Filter: (deleted_at IS NULL)
+                                                         Rows Removed by Filter: 0
+                                                         Buffers: shared hit=6619
+                                             ->  Index Scan using producto_pkey on producto pr  (cost=0.29..0.30 rows=1 width=16) (actual time=0.002..0.002 rows=1 loops=4091)
+                                                   Index Cond: (id_producto = dp.id_producto)
+                                                   Buffers: shared hit=12275
+                                       ->  Hash  (cost=1.12..1.12 rows=12 width=17) (actual time=0.013..0.013 rows=12 loops=3)
+                                             Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                             Buffers: shared hit=3
+                                             ->  Seq Scan on categoria c  (cost=0.00..1.12 rows=12 width=17) (actual time=0.004..0.006 rows=12 loops=3)
+                                                   Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=30
+ Planning Time: 0.344 ms
+ Execution Time: 33.129 ms
+(50 rows)
+
+CREATE FUNCTION
+CREATE TABLE
+COMMENT
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE TRIGGER
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE TRIGGER
+BEGIN
+LOCK TABLE
+ filas_resumen_cargadas 
+------------------------
+                   4380
+(1 row)
+
+COMMIT
+VACUUM
+== 5.2(d) Resultado leyendo el resumen ==
+ categoria | total_vendido 
+-----------+---------------
+ Almacén   |    4087354.00
+ Bebidas   |    2391258.00
+ Golosinas |    2198330.00
+ Mascotas  |    2188757.00
+ Snacks    |    2136491.00
+(5 rows)
+
+== 5.2(d) EXPLAIN ANALYZE leyendo el resumen (DESPUÉS) ==
+                                                                          QUERY PLAN                                                                          
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=32.11..32.12 rows=5 width=16) (actual time=0.025..0.027 rows=5 loops=1)
+   Buffers: shared hit=10
+   ->  Sort  (cost=32.11..32.14 rows=12 width=16) (actual time=0.025..0.026 rows=5 loops=1)
+         Sort Key: r.total_vendido DESC
+         Sort Method: top-N heapsort  Memory: 25kB
+         Buffers: shared hit=10
+         ->  Hash Join  (cost=5.65..31.91 rows=12 width=16) (actual time=0.015..0.021 rows=12 loops=1)
+               Hash Cond: (r.id_categoria = c.id_categoria)
+               Buffers: shared hit=10
+               ->  Bitmap Heap Scan on resumen_venta_diaria_categoria r  (cost=4.38..30.59 rows=12 width=15) (actual time=0.006..0.010 rows=12 loops=1)
+                     Recheck Cond: (dia = CURRENT_DATE)
+                     Filter: (lineas > 0)
+                     Heap Blocks: exact=7
+                     Buffers: shared hit=9
+                     ->  Bitmap Index Scan on pk_resumen_venta_diaria_categoria  (cost=0.00..4.38 rows=12 width=0) (actual time=0.004..0.004 rows=12 loops=1)
+                           Index Cond: (dia = CURRENT_DATE)
+                           Buffers: shared hit=2
+               ->  Hash  (cost=1.12..1.12 rows=12 width=17) (actual time=0.005..0.005 rows=12 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                     Buffers: shared hit=1
+                     ->  Seq Scan on categoria c  (cost=0.00..1.12 rows=12 width=17) (actual time=0.001..0.003 rows=12 loops=1)
+                           Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=4
+ Planning Time: 0.074 ms
+ Execution Time: 0.037 ms
+(26 rows)
+
+== 5.2(d) Consulta adicional: top 5 de los últimos 7 días leyendo el resumen ==
+                                                                             QUERY PLAN                                                                             
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=46.63..46.64 rows=5 width=41) (actual time=0.083..0.084 rows=5 loops=1)
+   Buffers: shared hit=38
+   ->  Sort  (cost=46.63..46.66 rows=12 width=41) (actual time=0.083..0.083 rows=5 loops=1)
+         Sort Key: (sum(r.total_vendido)) DESC
+         Sort Method: top-N heapsort  Memory: 25kB
+         Buffers: shared hit=38
+         ->  HashAggregate  (cost=46.28..46.43 rows=12 width=41) (actual time=0.076..0.078 rows=12 loops=1)
+               Group Key: c.nombre
+               Batches: 1  Memory Usage: 24kB
+               Buffers: shared hit=38
+               ->  Hash Join  (cost=6.43..45.86 rows=85 width=16) (actual time=0.022..0.057 rows=84 loops=1)
+                     Hash Cond: (r.id_categoria = c.id_categoria)
+                     Buffers: shared hit=38
+                     ->  Bitmap Heap Scan on resumen_venta_diaria_categoria r  (cost=5.16..44.29 rows=85 width=15) (actual time=0.013..0.038 rows=84 loops=1)
+                           Recheck Cond: ((dia > (CURRENT_DATE - 7)) AND (dia <= CURRENT_DATE))
+                           Filter: (lineas > 0)
+                           Heap Blocks: exact=34
+                           Buffers: shared hit=37
+                           ->  Bitmap Index Scan on pk_resumen_venta_diaria_categoria  (cost=0.00..5.14 rows=85 width=0) (actual time=0.007..0.007 rows=84 loops=1)
+                                 Index Cond: ((dia > (CURRENT_DATE - 7)) AND (dia <= CURRENT_DATE))
+                                 Buffers: shared hit=3
+                     ->  Hash  (cost=1.12..1.12 rows=12 width=17) (actual time=0.005..0.006 rows=12 loops=1)
+                           Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                           Buffers: shared hit=1
+                           ->  Seq Scan on categoria c  (cost=0.00..1.12 rows=12 width=17) (actual time=0.002..0.003 rows=12 loops=1)
+                                 Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=13
+ Planning Time: 0.098 ms
+ Execution Time: 0.104 ms
+(30 rows)
+
+== Equivalencia: original vs. resumen, hoy y últimos 7 días, sin LIMIT (esperado 0 en los cuatro) ==
+             control             | filas 
+---------------------------------+-------
+ hoy: original EXCEPT resumen    |     0
+ hoy: resumen EXCEPT original    |     0
+ 7 días: original EXCEPT resumen |     0
+ 7 días: resumen EXCEPT original |     0
+(4 rows)
+
+== 5.2(e) Auditoría completa (esperado: 0 filas) ==
+ dia | id_categoria | total_fuente | total_resumen | lineas_fuente | lineas_resumen 
+-----+--------------+--------------+---------------+---------------+----------------
+(0 rows)
+
+CREATE VIEW
+BEGIN
+SELECT 1
+== 5.1 Alta de pedido de hoy con 3 detalles ==
+INSERT 0 3
+ caso | diferencias 
+------+-------------
+ alta |           0
+(1 row)
+
+== 5.2 Modificación de cantidad de un detalle ==
+UPDATE 1
+   caso   | diferencias 
+----------+-------------
+ cantidad |           0
+(1 row)
+
+== 5.3 Baja lógica de un detalle ==
+UPDATE 1
+        caso         | diferencias 
+---------------------+-------------
+ baja logica detalle |           0
+(1 row)
+
+== 5.4 Cambio de fecha del pedido a ayer y vuelta a hoy ==
+UPDATE 1
+    caso    | diferencias 
+------------+-------------
+ fecha ayer |           0
+(1 row)
+
+UPDATE 1
+   caso    | diferencias 
+-----------+-------------
+ fecha hoy |           0
+(1 row)
+
+== 5.5 Baja lógica masiva: 100 pedidos de hoy ==
+UPDATE 100
+          caso           | diferencias 
+-------------------------+-------------
+ baja logica 100 pedidos |           0
+(1 row)
+
+== 5.6 Recategorización de un producto con ventas ==
+UPDATE 1
+       caso       | diferencias 
+------------------+-------------
+ recategorizacion |           0
+(1 row)
+
+== 5.7 Borrado físico de los detalles y del pedido de prueba ==
+DELETE 3
+DELETE 1
+      caso      | diferencias 
+----------------+-------------
+ borrado fisico |           0
+(1 row)
+
+== 5.8 Control negativo: se corrompe el resumen a mano y la auditoría debe detectarlo (esperado 1) ==
+UPDATE 1
+       caso        | diferencias 
+-------------------+-------------
+ corrupcion manual |           1
+(1 row)
+
+ROLLBACK
+== Auditoría final tras el ROLLBACK de las pruebas (esperado 0) ==
+ diferencias 
+-------------
+           0
+(1 row)
+

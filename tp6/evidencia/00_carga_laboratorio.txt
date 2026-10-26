@@ -1,0 +1,92 @@
+Pager usage is off.
+Timing is on.
+SET
+Time: 0.189 ms
+ALTER TABLE
+Time: 0.818 ms
+ALTER TABLE
+Time: 0.375 ms
+BEGIN
+Time: 0.058 ms
+DO
+Time: 1.057 ms
+INSERT 0 12
+Time: 0.318 ms
+INSERT 0 10000
+Time: 204.209 ms
+INSERT 0 20000
+Time: 58.091 ms
+SELECT 10000
+Time: 3.531 ms
+CREATE INDEX
+Time: 1.142 ms
+ANALYZE
+Time: 3.292 ms
+SELECT 20000
+Time: 5.626 ms
+CREATE INDEX
+Time: 1.999 ms
+ANALYZE
+Time: 1.229 ms
+INSERT 0 600000
+Time: 3592.347 ms (00:03.592)
+SELECT 600000
+Time: 176.952 ms
+CREATE INDEX
+Time: 70.582 ms
+ANALYZE
+Time: 29.688 ms
+INSERT 0 1500000
+Time: 10858.267 ms (00:10.858)
+ANALYZE
+Time: 48.813 ms
+ANALYZE
+Time: 67.720 ms
+UPDATE 12000
+Time: 203.688 ms
+UPDATE 6186
+Time: 147.791 ms
+COMMIT
+Time: 6.677 ms
+VACUUM
+Time: 1.262 ms
+VACUUM
+Time: 9.321 ms
+VACUUM
+Time: 16.061 ms
+VACUUM
+Time: 188.366 ms
+VACUUM
+Time: 196.245 ms
+== Volumen cargado ==
+       tabla       |  filas  
+-------------------+---------
+ categoria         |      12
+ producto          |   10000
+ cliente           |   20000
+ pedido eliminado  |   12000
+ pedido            |  600000
+ pedidos de hoy    |    1643
+ detalle_pedido    | 1500000
+ detalle eliminado |    6186
+(8 rows)
+
+Time: 110.045 ms
+== Productos por categoría ==
+   nombre   | productos 
+------------+-----------
+ Almacén    |      2116
+ Bebidas    |      1148
+ Lácteos    |       941
+ Panadería  |       828
+ Carnes     |       753
+ Verdulería |       699
+ Congelados |       655
+ Limpieza   |       622
+ Perfumería |       593
+ Snacks     |       569
+ Golosinas  |       547
+ Mascotas   |       529
+(12 rows)
+
+Time: 2.050 ms

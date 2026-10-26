@@ -1,0 +1,90 @@
+Pager usage is off.
+SET
+CREATE FUNCTION
+== Original (4 tablas), 30 ejecuciones ==
+ minimo_ms | mediana_ms | maximo_ms 
+-----------+------------+-----------
+    28.197 |     28.695 |    32.629
+(1 row)
+
+== Desnormalizada (resumen), 30 ejecuciones ==
+ minimo_ms | mediana_ms | maximo_ms 
+-----------+------------+-----------
+     0.016 |      0.017 |     0.024
+(1 row)
+
+== Alternativa sin desnormalizar: índice sobre pedido(fecha) (se revierte) ==
+BEGIN
+CREATE INDEX
+ANALYZE
+                                                                                    QUERY PLAN                                                                                     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=11950.64..11950.65 rows=5 width=41) (actual time=9.524..9.527 rows=5 loops=1)
+   Buffers: shared hit=8421 read=7
+   ->  Sort  (cost=11950.64..11950.67 rows=12 width=41) (actual time=9.523..9.526 rows=5 loops=1)
+         Sort Key: (sum(((dp.cantidad)::numeric * dp.precio_unitario))) DESC
+         Sort Method: top-N heapsort  Memory: 25kB
+         Buffers: shared hit=8421 read=7
+         ->  HashAggregate  (cost=11950.29..11950.44 rows=12 width=41) (actual time=9.512..9.517 rows=12 loops=1)
+               Group Key: c.nombre
+               Batches: 1  Memory Usage: 24kB
+               Buffers: shared hit=8421 read=7
+               ->  Nested Loop  (cost=380.56..11929.27 rows=2102 width=18) (actual time=1.772..8.528 rows=4091 loops=1)
+                     Buffers: shared hit=8421 read=7
+                     ->  Hash Join  (cost=380.42..11876.97 rows=2102 width=17) (actual time=1.762..7.556 rows=4091 loops=1)
+                           Hash Cond: (dp.id_producto = pr.id_producto)
+                           Buffers: shared hit=8397 read=7
+                           ->  Nested Loop  (cost=21.42..11512.45 rows=2102 width=17) (actual time=0.300..5.288 rows=4091 loops=1)
+                                 Buffers: shared hit=8263 read=7
+                                 ->  Bitmap Heap Scan on pedido ped  (cost=20.99..2154.79 rows=835 width=8) (actual time=0.295..1.336 rows=1643 loops=1)
+                                       Recheck Cond: ((fecha >= CURRENT_DATE) AND (fecha < (CURRENT_DATE + 1)) AND (deleted_at IS NULL))
+                                       Heap Blocks: exact=1643
+                                       Buffers: shared hit=1646 read=7
+                                       ->  Bitmap Index Scan on idx_tp6_alt_pedido_fecha_vigente  (cost=0.00..20.78 rows=835 width=0) (actual time=0.160..0.161 rows=1643 loops=1)
+                                             Index Cond: ((fecha >= CURRENT_DATE) AND (fecha < (CURRENT_DATE + 1)))
+                                             Buffers: shared hit=3 read=7
+                                 ->  Index Scan using pk_detalle_pedido on detalle_pedido dp  (cost=0.43..11.18 rows=3 width=25) (actual time=0.002..0.002 rows=2 loops=1643)
+                                       Index Cond: (id_pedido = ped.id_pedido)
+                                       Filter: (deleted_at IS NULL)
+                                       Rows Removed by Filter: 0
+                                       Buffers: shared hit=6617
+                           ->  Hash  (cost=234.00..234.00 rows=10000 width=16) (actual time=1.454..1.455 rows=10000 loops=1)
+                                 Buckets: 16384  Batches: 1  Memory Usage: 597kB
+                                 Buffers: shared hit=134
+                                 ->  Seq Scan on producto pr  (cost=0.00..234.00 rows=10000 width=16) (actual time=0.003..0.694 rows=10000 loops=1)
+                                       Buffers: shared hit=134
+                     ->  Memoize  (cost=0.15..0.16 rows=1 width=17) (actual time=0.000..0.000 rows=1 loops=4091)
+                           Cache Key: pr.id_categoria
+                           Cache Mode: logical
+                           Hits: 4079  Misses: 12  Evictions: 0  Overflows: 0  Memory Usage: 2kB
+                           Buffers: shared hit=24
+                           ->  Index Scan using categoria_pkey on categoria c  (cost=0.14..0.15 rows=1 width=17) (actual time=0.001..0.001 rows=1 loops=12)
+                                 Index Cond: (id_categoria = pr.id_categoria)
+                                 Buffers: shared hit=24
+ Planning:
+   Buffers: shared hit=157 read=1
+ Planning Time: 0.506 ms
+ Execution Time: 9.562 ms
+(46 rows)
+
+ minimo_ms | mediana_ms | maximo_ms 
+-----------+------------+-----------
+     8.463 |      8.556 |     8.778
+(1 row)
+
+ROLLBACK
+ANALYZE
+== Costo de escritura: INSERT de 1.000 detalles en 400 pedidos nuevos, 10 repeticiones ==
+CREATE FUNCTION
+           escenario            | minimo_ms | mediana_ms | maximo_ms 
+--------------------------------+-----------+------------+-----------
+ sin disparador (deshabilitado) |     8.336 |      8.485 |     8.950
+ con disparador de resumen      |    10.652 |     10.889 |    15.365
+(2 rows)
+
+== Control: la base no cambió (pedidos de hoy, filas del resumen y auditoría) ==
+ pedidos_hoy | filas_resumen | disparadores_activos 
+-------------+---------------+----------------------
+        1643 |          4380 |                    6
+(1 row)
+
