@@ -39,8 +39,8 @@ log() { printf '%s %s\n' "$(date +%Y-%m-%dT%H:%M:%S%z)" "$*" | tee -a "$LOG"; }
 
 on_error() {
     local code=$?
-    rm -f "$PARTIAL"
-    log "ERROR respaldo de $DB_NAME fallido (código $code). Archivo parcial eliminado."
+    rm -f "$PARTIAL" "$COUNTS"
+    log "ERROR respaldo de $DB_NAME fallido (código $code). Archivos parciales eliminados."
     exit "$code"
 }
 trap on_error ERR
@@ -49,7 +49,7 @@ log "INICIO respaldo de $DB_NAME en $PGHOST:$PGPORT como $PGUSER"
 log "pg_dump: $(pg_dump --version)"
 
 # Filas por tabla antes del respaldo: referencia para validar la restauración.
-psql -X -q -v ON_ERROR_STOP=1 -d "$DB_NAME" -A -F ',' -P footer=off -c "
+psql -X -q -w -v ON_ERROR_STOP=1 -d "$DB_NAME" -A -F ',' -P footer=off -c "
     SELECT 'categoria' AS tabla, count(*) AS filas FROM categoria
     UNION ALL SELECT 'cliente', count(*) FROM cliente
     UNION ALL SELECT 'producto', count(*) FROM producto
@@ -58,7 +58,7 @@ psql -X -q -v ON_ERROR_STOP=1 -d "$DB_NAME" -A -F ',' -P footer=off -c "
 log "Conteo previo guardado en $(basename "$COUNTS"): $(tail -n +2 "$COUNTS" | tr '\n' ' ')"
 
 INICIO=$(date +%s.%N)
-pg_dump -d "$DB_NAME" -Fc -f "$PARTIAL"
+pg_dump -w -d "$DB_NAME" -Fc -f "$PARTIAL"
 FIN=$(date +%s.%N)
 
 # Verificación mínima: el archivo existe, no está vacío y pg_restore puede leer su índice.

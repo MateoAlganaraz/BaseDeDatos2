@@ -1,0 +1,28 @@
+# Prueba de backup_foodstore.ps1 con PowerShell 7.4.6 (en Linux; en Windows se ejecuta igual)
+
+### Camino exitoso
+$ pwsh -File ./backup_foodstore.ps1 -BackupDir <temp>/backups -LogDir <temp>/logs; echo "exit=$?"
+2026-10-26T11:18:25-03:00 INICIO respaldo de foodstore en localhost:5432 como foodstore_backup
+2026-10-26T11:18:25-03:00 pg_dump: pg_dump (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)
+2026-10-26T11:18:25-03:00 Conteo previo guardado en foodstore_20261026_111825.counts.csv: categoria,12 cliente,20000 producto,10000 pedido,600000 detalle_pedido,1500000
+2026-10-26T11:18:28-03:00 Archivo: foodstore_20261026_111825.dump
+2026-10-26T11:18:28-03:00 Tamaño: 18780506 bytes (17.9 MB)
+2026-10-26T11:18:28-03:00 SHA-256: e40fa67b5d338127f6adf76b3dff75277ef0bd61cdadf53969e630b04794fd48
+2026-10-26T11:18:28-03:00 Entradas en el índice (pg_restore --list): 32
+2026-10-26T11:18:28-03:00 Duración de pg_dump: 2.45 s
+2026-10-26T11:18:28-03:00 OK respaldo de foodstore terminado
+exit=0
+total 18348
+-rw-r--r-- 1 root root       91 Oct 26 11:18 foodstore_20261026_111825.counts.csv
+-rw-r--r-- 1 root root 18780506 Oct 26 11:18 foodstore_20261026_111825.dump
+
+### Camino de error (base inexistente)
+$ pwsh -File ./backup_foodstore.ps1 -DbName no_existe ...; echo "exit=$?"
+2026-10-26T11:18:28-03:00 INICIO respaldo de no_existe en localhost:5432 como foodstore_backup
+2026-10-26T11:18:28-03:00 pg_dump: pg_dump (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)
+psql: error: connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  database "no_existe" does not exist
+2026-10-26T11:18:28-03:00 ERROR respaldo de no_existe fallido: psql terminó con código 2. Archivos parciales eliminados.
+exit=1
+$ ls backups (no deben quedar parciales de no_existe)
+foodstore_20261026_111825.counts.csv
+foodstore_20261026_111825.dump

@@ -1,0 +1,43 @@
+$ ./backup_foodstore.sh; echo "exit=$?"
+2026-10-26T11:18:38-0300 INICIO respaldo de foodstore en localhost:5432 como foodstore_backup
+2026-10-26T11:18:38-0300 pg_dump: pg_dump (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)
+2026-10-26T11:18:39-0300 Conteo previo guardado en foodstore_20261026_111838.counts.csv: categoria,12 cliente,20000 producto,10000 pedido,600000 detalle_pedido,1500000 
+2026-10-26T11:18:41-0300 Archivo: foodstore_20261026_111838.dump
+2026-10-26T11:18:41-0300 Tamaño: 18780506 bytes (18M)
+2026-10-26T11:18:41-0300 SHA-256: b93a6dd69b21c9135894606a3afd4ba1f7d5162e9f7d28afb58c26ddb9fe5c54
+2026-10-26T11:18:41-0300 Entradas en el índice (pg_restore --list): 32
+2026-10-26T11:18:41-0300 Duración de pg_dump: 2.44 s
+2026-10-26T11:18:41-0300 OK respaldo de foodstore terminado
+exit=0
+
+$ ls -l backups/ logs/
+backups/:
+total 18348
+-rw------- 1 root root       91 Oct 26 11:18 foodstore_20261026_111838.counts.csv
+-rw------- 1 root root 18780506 Oct 26 11:18 foodstore_20261026_111838.dump
+
+logs/:
+total 4
+-rw------- 1 root root 761 Oct 26 11:18 backup_20261026_111838.log
+
+$ cat backups/*.counts.csv
+tabla,filas
+categoria,12
+cliente,20000
+producto,10000
+pedido,600000
+detalle_pedido,1500000
+
+$ pg_restore --list backups/*.dump | head -12
+;
+; Archive created at 2026-10-26 11:18:39 -03
+;     dbname: foodstore
+;     TOC Entries: 37
+;     Compression: gzip
+;     Dump Version: 1.15-0
+;     Format: CUSTOM
+;     Integer: 4 bytes
+;     Offset: 8 bytes
+;     Dumped from database version: 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)
+;     Dumped by pg_dump version: 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)
+;

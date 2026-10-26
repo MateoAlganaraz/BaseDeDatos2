@@ -1,0 +1,13 @@
+# Prueba de restore_test.ps1 con PowerShell 7.4.6
+$ pwsh -File ./restore_test.ps1 -Jobs 2; echo "exit=$?"
+2026-10-26T11:20:19-03:00 Respaldo a restaurar: foodstore_20261026_111838.dump (creado 2026-10-26 11:18:39 -03)
+2026-10-26T11:20:19-03:00 Destino: foodstore_restore_test en localhost:5432 como postgres; pg_restore -j 2
+2026-10-26T11:20:19-03:00 INICIO del simulacro (cronómetro en marcha)
+2026-10-26T11:20:21-03:00 Restauración terminada en 1.78 s
+2026-10-26T11:20:21-03:00 Conteos OK (iguales al respaldo): categoria,12 cliente,20000 producto,10000 pedido,600000 detalle_pedido,1500000
+2026-10-26T11:20:21-03:00 productos_invalidos=0 detalles_invalidos=0
+2026-10-26T11:20:21-03:00 restricciones: origen=18 restaurada=18
+2026-10-26T11:20:21-03:00 FIN del simulacro: validaciones OK
+2026-10-26T11:20:21-03:00 RTO observado: 2.07 s (createdb + pg_restore + validaciones)
+2026-10-26T11:20:21-03:00 RPO observado: 100 s (00:01:40) = antigüedad del respaldo al iniciar el simulacro
+exit=0

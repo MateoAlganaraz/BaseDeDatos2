@@ -1,0 +1,10 @@
+BEGIN
+UPDATE 4000
+UPDATE 2116
+UPDATE 3000
+COMMIT
+       estado       |            momento            
+--------------------+-------------------------------
+ actividad simulada | 2026-10-26 11:17:21.085371-03
+(1 row)
+

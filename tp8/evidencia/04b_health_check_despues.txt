@@ -1,0 +1,69 @@
+Pager usage is off.
+== Momento del chequeo ==
+         ejecutado_en          |   base    |                                                                  motor                                                                   
+-------------------------------+-----------+------------------------------------------------------------------------------------------------------------------------------------------
+ 2026-10-26 11:20:41.508445-03 | foodstore | PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+(1 row)
+
+== 1. Tamaño de la base y de sus tablas más grandes ==
+ tamano_base 
+-------------
+ 215 MB
+(1 row)
+
+     tabla      |  total  |   datos    | indices 
+----------------+---------+------------+---------
+ detalle_pedido | 132 MB  | 87 MB      | 45 MB
+ pedido         | 69 MB   | 35 MB      | 34 MB
+ cliente        | 3784 kB | 2136 kB    | 1616 kB
+ producto       | 2384 kB | 1720 kB    | 624 kB
+ categoria      | 80 kB   | 8192 bytes | 32 kB
+(5 rows)
+
+== 2. Actividad de conexiones ==
+ conexiones | xact_commit | xact_rollback | pct_rollback | pct_cache_hit | deadlocks | temp_files | temp_usado | stats_reset 
+------------+-------------+---------------+--------------+---------------+-----------+------------+------------+-------------
+          1 |         155 |             3 |         1.90 |         86.13 |         0 |          0 | 0 bytes    | 
+(1 row)
+
+ estado | sesiones 
+--------+----------
+ active |        1
+(1 row)
+
+ max_connections | conexiones_totales_servidor 
+-----------------+-----------------------------
+             100 |                           6
+(1 row)
+
+== 3. Estado de las tablas: tuplas vivas/muertas, vacuum y analyze ==
+    relname     | n_live_tup | n_dead_tup | pct_muertas | n_mod_since_analyze |          last_vacuum          | last_autovacuum |         last_analyze          | last_autoanalyze | autovacuum_count | autoanalyze_count 
+----------------+------------+------------+-------------+---------------------+-------------------------------+-----------------+-------------------------------+------------------+------------------+-------------------
+ detalle_pedido |    1500000 |       2997 |        0.20 |                   0 | 2026-10-26 11:17:21.192008-03 |                 | 2026-10-26 11:17:21.27514-03  |                  |                0 |                 0
+ pedido         |     600000 |          0 |        0.00 |                   0 | 2026-10-26 11:17:21.300393-03 |                 | 2026-10-26 11:17:21.341134-03 |                  |                0 |                 0
+ cliente        |      20000 |          0 |        0.00 |                   0 | 2026-10-26 11:17:21.277678-03 |                 | 2026-10-26 11:17:21.292929-03 |                  |                0 |                 0
+ producto       |      10000 |          0 |        0.00 |                   0 | 2026-10-26 11:17:21.162429-03 |                 | 2026-10-26 11:17:21.175338-03 |                  |                0 |                 0
+ categoria      |         12 |          0 |        0.00 |                   0 | 2026-10-26 11:17:21.27637-03  |                 | 2026-10-26 11:17:21.276589-03 |                  |                0 |                 0
+(5 rows)
+
+== 4. Consultas activas (sin la propia) ==
+ pid | usename | application_name | client_addr | state | duracion_transaccion | duracion_consulta | wait_event_type | wait_event | consulta 
+-----+---------+------------------+-------------+-------+----------------------+-------------------+-----------------+------------+----------
+(0 rows)
+
+== 5. Alertas: consultas activas o transacciones abiertas de más de 5 minutos (esperado: 0 filas) ==
+ pid | usename | state | antiguedad | consulta 
+-----+---------+-------+------------+----------
+(0 rows)
+
+== 6. Bloqueos en espera (esperado: 0 filas) ==
+ pid_bloqueado | consulta_bloqueada | pid_bloqueante | consulta_bloqueante 
+---------------+--------------------+----------------+---------------------
+(0 rows)
+
+== 7. Edad de transacciones (wraparound): % consumido de autovacuum_freeze_max_age ==
+  datname  | edad_xid | pct_del_limite 
+-----------+----------+----------------
+ foodstore |      980 |           0.00
+(1 row)
+

@@ -1,0 +1,137 @@
+Pager usage is off.
+== 1. Configuración de autovacuum ==
+              name               | setting | unit 
+---------------------------------+---------+------
+ autovacuum                      | on      | 
+ autovacuum_analyze_scale_factor | 0.1     | 
+ autovacuum_analyze_threshold    | 50      | 
+ autovacuum_max_workers          | 3       | 
+ autovacuum_naptime              | 60      | s
+ autovacuum_vacuum_scale_factor  | 0.2     | 
+ autovacuum_vacuum_threshold     | 50      | 
+(7 rows)
+
+== 1. Trabajadores de autovacuum activos en este momento ==
+ pid | duracion | tarea 
+-----+----------+-------
+(0 rows)
+
+CREATE VIEW
+== 2. Diagnóstico ANTES (requiere_vacuum / requiere_analyze según la fórmula de autovacuum) ==
+    relname     | filas_estimadas | n_dead_tup | pct_muertas | umbral_vacuum | requiere_vacuum | n_mod_since_analyze | umbral_analyze | requiere_analyze | ultimo_vacuum | ultimo_analyze 
+----------------+-----------------+------------+-------------+---------------+-----------------+---------------------+----------------+------------------+---------------+----------------
+ producto       |           10000 |       6116 |      100.00 |          2050 | t               |                6116 |           1050 | t                |               | 
+ detalle_pedido |         1500000 |       3000 |      100.00 |        300050 | f               |                3000 |         150050 | t                |               | 
+ categoria      |              12 |          0 |             |            52 | f               |                   0 |             51 | t                |               | 
+ cliente        |           20000 |          0 |             |          4050 | f               |                   0 |           2050 | t                |               | 
+ pedido         |          600000 |          0 |             |        120050 | f               |                   0 |          60050 | t                |               | 
+(5 rows)
+
+== 3. Acción: VACUUM (ANALYZE) solo sobre las tablas que lo requieren ==
+psql:maintenance.sql:68: INFO:  vacuuming "foodstore.public.producto"
+psql:maintenance.sql:68: INFO:  finished vacuuming "foodstore.public.producto": index scans: 1
+pages: 0 removed, 215 remain, 215 scanned (100.00% of total)
+tuples: 6116 removed, 10000 remain, 0 are dead but not yet removable
+removable cutoff: 1415, which was 0 XIDs old when operation ended
+frozen: 0 pages from table (0.00% of total) had 0 tuples frozen
+index scan needed: 187 pages from table (86.98% of total) had 6116 dead item identifiers removed
+index "producto_pkey": pages: 57 in total, 0 newly deleted, 0 currently deleted, 0 reusable
+index "idx_producto_categoria_activo_vigente": pages: 21 in total, 2 newly deleted, 2 currently deleted, 0 reusable
+avg read rate: 2.448 MB/s, avg write rate: 4.895 MB/s
+buffer usage: 785 hits, 1 misses, 2 dirtied
+WAL usage: 667 records, 3 full page images, 98465 bytes
+system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+psql:maintenance.sql:68: INFO:  vacuuming "foodstore.pg_toast.pg_toast_32798"
+psql:maintenance.sql:68: INFO:  finished vacuuming "foodstore.pg_toast.pg_toast_32798": index scans: 0
+pages: 0 removed, 0 remain, 0 scanned (100.00% of total)
+tuples: 0 removed, 0 remain, 0 are dead but not yet removable
+removable cutoff: 1415, which was 0 XIDs old when operation ended
+new relfrozenxid: 1415, which is 13 XIDs ahead of previous value
+frozen: 0 pages from table (100.00% of total) had 0 tuples frozen
+index scan not needed: 0 pages from table (100.00% of total) had 0 dead item identifiers removed
+avg read rate: 88.778 MB/s, avg write rate: 0.000 MB/s
+buffer usage: 27 hits, 1 misses, 0 dirtied
+WAL usage: 1 records, 0 full page images, 188 bytes
+system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+psql:maintenance.sql:68: INFO:  analyzing "public.producto"
+psql:maintenance.sql:68: INFO:  "producto": scanned 215 of 215 pages, containing 10000 live rows and 0 dead rows; 10000 rows in sample, 10000 estimated total rows
+VACUUM
+psql:maintenance.sql:68: INFO:  vacuuming "foodstore.public.detalle_pedido"
+psql:maintenance.sql:68: INFO:  finished vacuuming "foodstore.public.detalle_pedido": index scans: 0
+pages: 0 removed, 11103 remain, 2915 scanned (26.25% of total)
+tuples: 3000 removed, 1500180 remain, 0 are dead but not yet removable
+removable cutoff: 1416, which was 0 XIDs old when operation ended
+frozen: 0 pages from table (0.00% of total) had 0 tuples frozen
+index scan bypassed: 23 pages from table (0.21% of total) have 2997 dead item identifiers
+avg read rate: 0.487 MB/s, avg write rate: 1199.636 MB/s
+buffer usage: 5843 hits, 1 misses, 2461 dirtied
+WAL usage: 456 records, 1 full page images, 41144 bytes
+system usage: CPU: user: 0.01 s, system: 0.00 s, elapsed: 0.01 s
+psql:maintenance.sql:68: INFO:  analyzing "public.detalle_pedido"
+psql:maintenance.sql:68: INFO:  "detalle_pedido": scanned 11103 of 11103 pages, containing 1500000 live rows and 2997 dead rows; 30000 rows in sample, 1500000 estimated total rows
+VACUUM
+psql:maintenance.sql:68: INFO:  vacuuming "foodstore.public.categoria"
+psql:maintenance.sql:68: INFO:  finished vacuuming "foodstore.public.categoria": index scans: 0
+pages: 0 removed, 1 remain, 1 scanned (100.00% of total)
+tuples: 0 removed, 12 remain, 0 are dead but not yet removable
+removable cutoff: 1417, which was 0 XIDs old when operation ended
+frozen: 0 pages from table (0.00% of total) had 0 tuples frozen
+index scan not needed: 0 pages from table (0.00% of total) had 0 dead item identifiers removed
+avg read rate: 103.249 MB/s, avg write rate: 0.000 MB/s
+buffer usage: 38 hits, 3 misses, 0 dirtied
+WAL usage: 0 records, 0 full page images, 0 bytes
+system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+psql:maintenance.sql:68: INFO:  vacuuming "foodstore.pg_toast.pg_toast_32786"
+psql:maintenance.sql:68: INFO:  finished vacuuming "foodstore.pg_toast.pg_toast_32786": index scans: 0
+pages: 0 removed, 0 remain, 0 scanned (100.00% of total)
+tuples: 0 removed, 0 remain, 0 are dead but not yet removable
+removable cutoff: 1417, which was 0 XIDs old when operation ended
+new relfrozenxid: 1417, which is 16 XIDs ahead of previous value
+frozen: 0 pages from table (100.00% of total) had 0 tuples frozen
+index scan not needed: 0 pages from table (100.00% of total) had 0 dead item identifiers removed
+avg read rate: 124.008 MB/s, avg write rate: 0.000 MB/s
+buffer usage: 25 hits, 1 misses, 0 dirtied
+WAL usage: 1 records, 0 full page images, 188 bytes
+system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+psql:maintenance.sql:68: INFO:  analyzing "public.categoria"
+psql:maintenance.sql:68: INFO:  "categoria": scanned 1 of 1 pages, containing 12 live rows and 0 dead rows; 12 rows in sample, 12 estimated total rows
+VACUUM
+psql:maintenance.sql:68: INFO:  vacuuming "foodstore.public.cliente"
+psql:maintenance.sql:68: INFO:  finished vacuuming "foodstore.public.cliente": index scans: 0
+pages: 0 removed, 267 remain, 1 scanned (0.37% of total)
+tuples: 0 removed, 20000 remain, 0 are dead but not yet removable
+removable cutoff: 1418, which was 0 XIDs old when operation ended
+frozen: 0 pages from table (0.00% of total) had 0 tuples frozen
+index scan not needed: 0 pages from table (0.00% of total) had 0 dead item identifiers removed
+avg read rate: 80.210 MB/s, avg write rate: 16.042 MB/s
+buffer usage: 32 hits, 5 misses, 1 dirtied
+WAL usage: 0 records, 0 full page images, 0 bytes
+system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+psql:maintenance.sql:68: INFO:  analyzing "public.cliente"
+psql:maintenance.sql:68: INFO:  "cliente": scanned 267 of 267 pages, containing 20000 live rows and 0 dead rows; 20000 rows in sample, 20000 estimated total rows
+VACUUM
+psql:maintenance.sql:68: INFO:  vacuuming "foodstore.public.pedido"
+psql:maintenance.sql:68: INFO:  launched 1 parallel vacuum worker for index cleanup (planned: 1)
+psql:maintenance.sql:68: INFO:  finished vacuuming "foodstore.public.pedido": index scans: 0
+pages: 0 removed, 4512 remain, 1 scanned (0.02% of total)
+tuples: 0 removed, 600000 remain, 0 are dead but not yet removable
+removable cutoff: 1419, which was 0 XIDs old when operation ended
+frozen: 0 pages from table (0.00% of total) had 0 tuples frozen
+index scan not needed: 0 pages from table (0.00% of total) had 0 dead item identifiers removed
+avg read rate: 2.238 MB/s, avg write rate: 1.119 MB/s
+buffer usage: 43 hits, 2 misses, 1 dirtied
+WAL usage: 0 records, 0 full page images, 0 bytes
+system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+psql:maintenance.sql:68: INFO:  analyzing "public.pedido"
+psql:maintenance.sql:68: INFO:  "pedido": scanned 4512 of 4512 pages, containing 600000 live rows and 0 dead rows; 30000 rows in sample, 600000 estimated total rows
+VACUUM
+== 4. Diagnóstico DESPUÉS ==
+    relname     | n_live_tup | n_dead_tup | pct_muertas | requiere_vacuum | n_mod_since_analyze | requiere_analyze |         ultimo_vacuum         |        ultimo_analyze         
+----------------+------------+------------+-------------+-----------------+---------------------+------------------+-------------------------------+-------------------------------
+ categoria      |         12 |          0 |        0.00 | f               |                   0 | f                | 2026-10-26 11:17:21.27637-03  | 2026-10-26 11:17:21.276589-03
+ cliente        |      20000 |          0 |        0.00 | f               |                   0 | f                | 2026-10-26 11:17:21.277678-03 | 2026-10-26 11:17:21.292929-03
+ detalle_pedido |    1500000 |       2997 |        0.20 | f               |                   0 | f                | 2026-10-26 11:17:21.192008-03 | 2026-10-26 11:17:21.27514-03
+ pedido         |     600000 |          0 |        0.00 | f               |                   0 | f                | 2026-10-26 11:17:21.300393-03 | 2026-10-26 11:17:21.341134-03
+ producto       |      10000 |          0 |        0.00 | f               |                   0 | f                | 2026-10-26 11:17:21.162429-03 | 2026-10-26 11:17:21.175338-03
+(5 rows)
+

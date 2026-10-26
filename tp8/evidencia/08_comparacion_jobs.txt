@@ -1,0 +1,7 @@
+# Comparación de RTO: pg_restore secuencial vs. paralelo (mismo respaldo, 3 corridas cada uno, 2 CPU)
+JOBS=1 | Restauración terminada en 2.10 s RTO observado: 2.36 s (createdb + pg_restore + validaciones) 
+JOBS=2 | Restauración terminada en 1.72 s RTO observado: 1.99 s (createdb + pg_restore + validaciones) 
+JOBS=1 | Restauración terminada en 2.09 s RTO observado: 2.36 s (createdb + pg_restore + validaciones) 
+JOBS=2 | Restauración terminada en 1.59 s RTO observado: 1.84 s (createdb + pg_restore + validaciones) 
+JOBS=1 | Restauración terminada en 2.11 s RTO observado: 2.37 s (createdb + pg_restore + validaciones) 
+JOBS=2 | Restauración terminada en 1.68 s RTO observado: 1.93 s (createdb + pg_restore + validaciones) 

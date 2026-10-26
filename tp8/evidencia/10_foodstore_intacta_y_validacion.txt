@@ -1,0 +1,33 @@
+# foodstore sigue intacta después de los simulacros (la restauración solo usó foodstore_restore_test)
+$ psql -h localhost -U foodstore_backup -d foodstore -c "<conteos>"
+     tabla      |  filas  
+----------------+---------
+ categoria      |      12
+ cliente        |   20000
+ producto       |   10000
+ pedido         |  600000
+ detalle_pedido | 1500000
+(5 rows)
+
+$ psql -c "SELECT datname, pg_size_pretty(pg_database_size(datname)) FROM pg_database WHERE datname LIKE 'foodstore%'"
+        datname         | tamano 
+------------------------+--------
+ foodstore              | 215 MB
+ foodstore_restore_test | 211 MB
+(2 rows)
+
+# Validación mínima de la consigna, sobre foodstore_restore_test (precio -> precio_lista en este esquema)
+ productos_invalidos 
+---------------------
+                   0
+(1 row)
+
+ detalles_invalidos 
+--------------------
+                  0
+(1 row)
+
+# La consulta de la consigna tal cual (columna precio) falla en este esquema:
+ERROR:  column "precio" does not exist
+LINE 1: ...UNT(*) AS productos_invalidos FROM producto WHERE precio < 0...
+                                                             ^

@@ -1,0 +1,8 @@
+2026-10-26 10:16:40.464 -03 [266] LOG:  database system was interrupted; last known up at 2026-10-26 09:48:46 -03
+2026-10-26 10:16:40.697 -03 [266] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-10-26 10:16:41.514 -03 [266] LOG:  redo done at 0/7309CA18 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.81 s
+2026-10-26 10:16:41.536 -03 [263] LOG:  database system is ready to accept connections
+2026-10-26 11:15:58.722 -03 [221] LOG:  database system was interrupted; last known up at 2026-10-26 10:16:41 -03
+2026-10-26 11:15:58.950 -03 [221] LOG:  database system was not properly shut down; automatic recovery in progress
+2026-10-26 11:16:19.957 -03 [221] LOG:  redo done at 0/8D296070 system usage: CPU: user: 1.52 s, system: 0.56 s, elapsed: 21.00 s
+2026-10-26 11:16:20.275 -03 [218] LOG:  database system is ready to accept connections

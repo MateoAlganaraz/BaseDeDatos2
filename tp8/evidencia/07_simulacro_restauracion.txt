@@ -1,0 +1,14 @@
+$ ./restore_test.sh; echo "exit=$?"
+2026-10-26T11:19:18-0300 Respaldo a restaurar: foodstore_20261026_111838.dump (creado 2026-10-26 11:18:39 -03)
+2026-10-26T11:19:18-0300 Destino: foodstore_restore_test en localhost:5432 como postgres; pg_restore -j 1
+NOTICE:  database "foodstore_restore_test" does not exist, skipping
+2026-10-26T11:19:18-0300 INICIO del simulacro (cronómetro en marcha)
+2026-10-26T11:19:22-0300 Restauración terminada en 3.78 s
+2026-10-26T11:19:22-0300 Conteos OK (iguales al respaldo): categoria,12 cliente,20000 producto,10000 pedido,600000 detalle_pedido,1500000 
+2026-10-26T11:19:22-0300 productos_invalidos=0 detalles_invalidos=0
+2026-10-26T11:19:22-0300 restricciones: origen=18 restaurada=18
+2026-10-26T11:19:22-0300 FIN del simulacro: validaciones OK
+2026-10-26T11:19:22-0300 RTO observado: 4.04 s (createdb + pg_restore + validaciones)
+2026-10-26T11:19:22-0300 RPO observado: 39 s (0h 00m 39s) = antigüedad del respaldo al iniciar el simulacro
+2026-10-26T11:19:22-0300 Tamaño de foodstore_restore_test: 210 MB
+exit=0
