@@ -1,0 +1,40 @@
+2026-10-26 09:41:02.165 -03 [687] [unknown]@[unknown] [local] app=[unknown] LOG:  connection received: host=[local]
+2026-10-26 09:41:02.165 -03 [687] root@food_store_tp7_lab [local] app=[unknown] LOG:  connection authenticated: identity="root" method=peer (/etc/postgresql/16/main/pg_hba.conf:123)
+2026-10-26 09:41:02.165 -03 [687] root@food_store_tp7_lab [local] app=[unknown] LOG:  connection authorized: user=root database=food_store_tp7_lab application_name=psql
+2026-10-26 09:41:02.167 -03 [688] [unknown]@[unknown] 127.0.0.1 app=[unknown] LOG:  connection received: host=127.0.0.1 port=36682
+2026-10-26 09:41:02.175 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=[unknown] LOG:  connection authenticated: identity="app_web" method=scram-sha-256 (/etc/postgresql/16/main/pg_hba.conf:125)
+2026-10-26 09:41:02.175 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=[unknown] LOG:  connection authorized: user=app_web database=food_store_tp7_lab application_name=foodstore_web SSL enabled (protocol=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384, bits=256)
+2026-10-26 09:41:02.175 -03 [687] root@food_store_tp7_lab [local] app=psql LOG:  disconnection: session time: 0:00:00.010 user=root database=food_store_tp7_lab host=[local]
+2026-10-26 09:41:02.176 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=foodstore_web LOG:  statement: SELECT current_user, inet_client_addr() AS origen;
+2026-10-26 09:41:02.176 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=foodstore_web LOG:  statement: SELECT id_producto, nombre, precio_lista, stock
+	FROM producto
+	WHERE activo AND deleted_at IS NULL
+	ORDER BY id_producto
+	LIMIT 3;
+2026-10-26 09:41:02.177 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=foodstore_web LOG:  statement: WITH nuevo AS (
+	    INSERT INTO pedido (id_cliente, forma_pago)
+	    VALUES ((SELECT min(id_cliente) FROM cliente WHERE deleted_at IS NULL), 'TARJETA')
+	    RETURNING id_pedido
+	)
+	INSERT INTO detalle_pedido (id_pedido, id_producto, cantidad, precio_unitario)
+	SELECT nuevo.id_pedido, p.id_producto, 2, p.precio_lista
+	FROM nuevo
+	CROSS JOIN producto p
+	WHERE p.id_producto = (SELECT min(id_producto) FROM producto);
+2026-10-26 09:41:02.179 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=foodstore_web LOG:  statement: UPDATE producto SET stock = stock - 2
+	WHERE id_producto = (SELECT min(id_producto) FROM producto);
+2026-10-26 09:41:02.180 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=foodstore_web LOG:  statement: SELECT fn_autenticar('nadie.tp7audit@correo.test', 'TP7-AUDIT-clave-erronea') AS autenticado;
+2026-10-26 09:41:02.184 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=foodstore_web LOG:  fn_autenticar: intento fallido (email inexistente)
+2026-10-26 09:41:02.184 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=foodstore_web CONTEXT:  PL/pgSQL function fn_autenticar(text,text) line 11 at RAISE
+2026-10-26 09:41:02.184 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=foodstore_web STATEMENT:  SELECT fn_autenticar('nadie.tp7audit@correo.test', 'TP7-AUDIT-clave-erronea') AS autenticado;
+2026-10-26 09:41:02.186 -03 [689] [unknown]@[unknown] 127.0.0.1 app=[unknown] LOG:  connection received: host=127.0.0.1 port=36688
+2026-10-26 09:41:02.191 -03 [689] admin_datos@food_store_tp7_lab 127.0.0.1 app=[unknown] LOG:  connection authenticated: identity="admin_datos" method=scram-sha-256 (/etc/postgresql/16/main/pg_hba.conf:125)
+2026-10-26 09:41:02.191 -03 [689] admin_datos@food_store_tp7_lab 127.0.0.1 app=[unknown] LOG:  connection authorized: user=admin_datos database=food_store_tp7_lab application_name=psql_admin SSL enabled (protocol=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384, bits=256)
+2026-10-26 09:41:02.192 -03 [688] app_web@food_store_tp7_lab 127.0.0.1 app=foodstore_web LOG:  disconnection: session time: 0:00:00.025 user=app_web database=food_store_tp7_lab host=127.0.0.1 port=36682
+2026-10-26 09:41:02.193 -03 [689] admin_datos@food_store_tp7_lab 127.0.0.1 app=psql_admin ERROR:  permission denied for schema public at character 22
+2026-10-26 09:41:02.193 -03 [689] admin_datos@food_store_tp7_lab 127.0.0.1 app=psql_admin STATEMENT:  SELECT count(*) FROM public.producto;
+2026-10-26 09:41:02.193 -03 [689] admin_datos@food_store_tp7_lab 127.0.0.1 app=psql_admin LOG:  statement: COMMENT ON TABLE producto IS 'Catálogo de Food Store (comentario agregado en la prueba TP7-AUDIT)';
+2026-10-26 09:41:02.194 -03 [690] [unknown]@[unknown] 127.0.0.1 app=[unknown] LOG:  connection received: host=127.0.0.1 port=36702
+2026-10-26 09:41:02.200 -03 [690] app_web@food_store_tp7_lab 127.0.0.1 app=[unknown] FATAL:  password authentication failed for user "app_web"
+2026-10-26 09:41:02.200 -03 [690] app_web@food_store_tp7_lab 127.0.0.1 app=[unknown] DETAIL:  Connection matched file "/etc/postgresql/16/main/pg_hba.conf" line 125: "host    all             all             127.0.0.1/32            scram-sha-256"
+2026-10-26 09:41:02.200 -03 [689] admin_datos@food_store_tp7_lab 127.0.0.1 app=psql_admin LOG:  disconnection: session time: 0:00:00.014 user=admin_datos database=food_store_tp7_lab host=127.0.0.1 port=36688

@@ -1,0 +1,41 @@
+Pager usage is off.
+== B.2.1 Conexión de la aplicación ==
+You are now connected to database "food_store_tp7_lab" as user "app_web" on host "127.0.0.1" at port "5432".
+ current_user |  origen   
+--------------+-----------
+ app_web      | 127.0.0.1
+(1 row)
+
+== B.2.2 Lectura ==
+ id_producto |       nombre       | precio_lista | stock 
+-------------+--------------------+--------------+-------
+           1 | TP6_PRODUCTO_00001 |      1687.00 |   115
+           2 | TP6_PRODUCTO_00002 |      1274.00 |   138
+           3 | TP6_PRODUCTO_00003 |       861.00 |   157
+(3 rows)
+
+== B.2.3 Inserción: pedido con un detalle ==
+INSERT 0 1
+== B.2.4 Actualización: descuento de stock ==
+UPDATE 1
+== B.2.5 Autenticación fallida de la aplicación (fn_autenticar) ==
+ autenticado 
+-------------
+ f
+(1 row)
+
+== B.2.6 Operación privilegiada: admin_datos con SET ROLE explícito ==
+You are now connected to database "food_store_tp7_lab" as user "admin_datos".
+ current_user 
+--------------
+ admin_datos
+(1 row)
+
+psql:/home/claude/basededatos2/tp7/sql/auditoria_test.sql:57: ERROR:  permission denied for schema public
+LINE 1: SELECT count(*) FROM public.producto;
+                             ^
+SET
+COMMENT
+RESET
+== B.2.7 Inicio de sesión fallido contra el motor (contraseña incorrecta) ==
+psql:/home/claude/basededatos2/tp7/sql/auditoria_test.sql:65: error: \connect: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "app_web"

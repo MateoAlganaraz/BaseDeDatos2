@@ -1,0 +1,43 @@
+Pager usage is off.
+== Valores ANTES ==
+          name           |     setting      |      context      
+-------------------------+------------------+-------------------
+ log_connections         | off              | superuser-backend
+ log_destination         | stderr           | sighup
+ log_disconnections      | off              | superuser-backend
+ log_line_prefix         | %m [%p] %q%u@%d  | sighup
+ log_min_error_statement | error            | superuser
+ log_statement           | none             | superuser
+ log_timezone            | Etc/UTC          | sighup
+ logging_collector       | off              | postmaster
+(8 rows)
+
+ALTER SYSTEM
+ALTER SYSTEM
+ALTER SYSTEM
+ALTER SYSTEM
+ALTER SYSTEM
+ALTER SYSTEM
+ pg_reload_conf 
+----------------
+ t
+(1 row)
+
+ALTER ROLE
+== Valores DESPUÉS (en esta sesión ya recargada) ==
+          name           |            setting             |       source       
+-------------------------+--------------------------------+--------------------
+ log_connections         | off                            | default
+ log_disconnections      | off                            | default
+ log_line_prefix         | %m [%p] %q%u@%d %h app=%a      | configuration file
+ log_min_error_statement | error                          | configuration file
+ log_statement           | mod                            | configuration file
+ log_timezone            | America/Argentina/Buenos_Aires | configuration file
+(6 rows)
+
+== Configuración específica por rol ==
+ rolname |                                              setconfig                                               
+---------+------------------------------------------------------------------------------------------------------
+ app_web | {search_path=public,statement_timeout=10s,idle_in_transaction_session_timeout=30s,log_statement=all}
+(1 row)
+

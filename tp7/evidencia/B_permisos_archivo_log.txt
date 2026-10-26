@@ -1,0 +1,25 @@
+$ ls -l /var/log/postgresql/postgresql-16-main.log
+-rw-r----- 1 postgres adm 88369 Oct 26 12:41 /var/log/postgresql/postgresql-16-main.log
+
+$ ls -ld /var/log/postgresql /var/lib/postgresql/16/main
+drwx------ 19 postgres postgres 4096 Oct 26 12:41 /var/lib/postgresql/16/main
+drwxrwxr-t  2 root     postgres 4096 Oct 23 21:56 /var/log/postgresql
+
+$ getent group adm
+adm:x:4:ubuntu
+
+$ psql -c "SELECT name, setting FROM pg_settings WHERE name IN ('log_file_mode','logging_collector','log_destination')"
+       name        | setting 
+-------------------+---------
+ log_destination   | stderr
+ log_file_mode     | 0600
+ logging_collector | off
+(3 rows)
+
+$ psql -c "SELECT rolname FROM pg_roles r WHERE pg_has_role(r.oid, 'pg_read_server_files', 'MEMBER') AND rolname NOT LIKE 'pg\_%'"
+ rolname  | rolsuper 
+----------+----------
+ postgres | t
+ root     | t
+(2 rows)
+

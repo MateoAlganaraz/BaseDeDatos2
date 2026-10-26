@@ -59,14 +59,15 @@ case "$PARTE" in
     su_psql -f "$DIR/sql/configuracion_auditoria.sql" > "$DIR/evidencia/B_configuracion_auditoria.txt" 2>&1
     preparar_credenciales
     inicio=$(stat -c %s "$PGLOG")
-    psql -X -v db="$DB" -f "$DIR/sql/auditoria_test.sql" > "$DIR/evidencia/B_salida_auditoria_test.txt" 2>&1 || true
+    psql -X -d "$DB" -v db="$DB" -f "$DIR/sql/auditoria_test.sql" > "$DIR/evidencia/B_salida_auditoria_test.txt" 2>&1 || true
     recortar_log "$inicio" "$DIR/docs/log_auditoria_prueba.txt"
     echo "Log en docs/log_auditoria_prueba.txt"
     ;;
   C)
     preparar_credenciales
     inicio=$(stat -c %s "$PGLOG")
-    psql -X -v db="$DB" -f "$DIR/sql/simulacro_incidente.sql" > "$DIR/evidencia/C_salida_simulacro.txt" 2>&1 || true
+    psql -X "host=127.0.0.1 dbname=$DB user=app_web application_name=sqlcli sslmode=require" \
+        -f "$DIR/sql/simulacro_incidente.sql" > "$DIR/evidencia/C_salida_simulacro.txt" 2>&1 || true
     recortar_log "$inicio" "$DIR/evidencia/C_log_simulacro_original.txt"
     psql -X -d "$DB" -f "$DIR/sql/simulacro_verificacion.sql" > "$DIR/evidencia/C_verificacion_escalamiento.txt" 2>&1
     python3 "$DIR/scripts/anonimizar_log.py" "$DIR/evidencia/C_log_simulacro_original.txt" \
