@@ -1,0 +1,162 @@
+Pager usage is off.
+== 1. \du (roles del proyecto) ==
+           List of roles
+     Role name     |   Attributes   
+-------------------+----------------
+ admin_datos       | 5 connections
+ app_web           | 50 connections
+ food_store_owner  | Cannot login
+ rol_app_escritura | Cannot login
+ rol_app_lectura   | Cannot login
+ rol_auditor       | Cannot login
+ rol_reportes      | Cannot login
+ rol_soporte       | Cannot login
+
+== 1. Membresías con sus opciones (PostgreSQL 16) ==
+        rol        |   miembro   | admin_option | inherit_option | set_option 
+-------------------+-------------+--------------+----------------+------------
+ food_store_owner  | admin_datos | f            | f              | t
+ rol_app_escritura | app_web     | f            | t              | t
+ rol_app_lectura   | app_web     | f            | t              | t
+(3 rows)
+
+SET
+== 2. information_schema.role_table_grants (sin el dueño) ==
+      grantee      |    table_name    | privilegios 
+-------------------+------------------+-------------
+ rol_app_escritura | cliente          | INSERT
+ rol_app_escritura | detalle_pedido   | INSERT
+ rol_app_escritura | pedido           | INSERT
+ rol_app_lectura   | categoria        | SELECT
+ rol_app_lectura   | cliente          | SELECT
+ rol_app_lectura   | detalle_pedido   | SELECT
+ rol_app_lectura   | pedido           | SELECT
+ rol_app_lectura   | producto         | SELECT
+ rol_auditor       | auditoria_acceso | SELECT
+ rol_reportes      | categoria        | SELECT
+ rol_reportes      | detalle_pedido   | SELECT
+ rol_reportes      | pedido           | SELECT
+ rol_reportes      | producto         | SELECT
+(13 rows)
+
+== 2. Privilegios a nivel de columna (pg_attribute.attacl) ==
+      grantee      |     tabla      | privilege_type |                                                  columnas                                                  
+-------------------+----------------+----------------+------------------------------------------------------------------------------------------------------------
+ rol_app_lectura   | usuario        | SELECT         | id_usuario, nombre, apellido, email, rol, activo
+ rol_app_escritura | cliente        | UPDATE         | nombre, apellido, email, telefono, deleted_at
+ rol_app_escritura | detalle_pedido | UPDATE         | cantidad, deleted_at
+ rol_app_escritura | pedido         | UPDATE         | forma_pago, deleted_at
+ rol_app_escritura | producto       | UPDATE         | stock
+ rol_soporte       | usuario        | SELECT         | id_usuario, nombre, apellido, email, telefono, rol, fecha_alta, activo, intentos_fallidos, bloqueado_hasta
+ rol_soporte       | usuario        | UPDATE         | activo
+(7 rows)
+
+== 2. information_schema.role_routine_grants (sin el dueño) ==
+      grantee      |     routine_name     | privilege_type 
+-------------------+----------------------+----------------
+ rol_app_escritura | fn_autenticar        | EXECUTE
+ rol_soporte       | fn_resetear_password | EXECUTE
+(2 rows)
+
+RESET
+== 2. Privilegios de PUBLIC sobre tablas y funciones del esquema public (esperado: 0 y 0) ==
+  objeto   | privilegios_public 
+-----------+--------------------
+ tablas    |                  0
+ funciones |                  0
+(2 rows)
+
+== 2. Configuración por rol de login ==
+ rolname |                                     setconfig                                      
+---------+------------------------------------------------------------------------------------
+ app_web | {search_path=public,statement_timeout=10s,idle_in_transaction_session_timeout=30s}
+(1 row)
+
+== 2. CONNECT sobre la base ==
+   grantee    | privilege_type 
+--------------+----------------
+ admin_datos  | CONNECT
+ app_web      | CONNECT
+ rol_auditor  | CONNECT
+ rol_reportes | CONNECT
+ rol_soporte  | CONNECT
+ root         | CONNECT
+ root         | CREATE
+ root         | TEMPORARY
+(8 rows)
+
+== 2. Privilegios por defecto para objetos futuros ==
+ para_objetos_de  | esquema  |   tipo    |               defaclacl               
+------------------+----------+-----------+---------------------------------------
+ food_store_owner | (global) | funciones | {food_store_owner=X/food_store_owner}
+(1 row)
+
+CREATE TABLE
+INSERT 0 26
+INSERT 0 6
+INSERT 0 10
+SELECT 42
+== 3. Esperado vs. real (ni más ni menos: 0 y 0) ==
+               control                | filas 
+--------------------------------------+-------
+ esperado EXCEPT real (falta otorgar) |     0
+ real EXCEPT esperado (sobra)         |     0
+ privilegios esperados                |    42
+ privilegios reales                   |    42
+(4 rows)
+
+== 3. Detalle de diferencias, si las hubiera ==
+ tipo | grantee | objeto | columna | privilegio 
+------+---------+--------+---------+------------
+(0 rows)
+
+CREATE FUNCTION
+== 4. Pruebas funcionales (la columna coincide debe ser true en todas) ==
+ n  |       rol       |                                                 operacion                                                 | esperado  | obtenido  | coincide 
+----+-----------------+-----------------------------------------------------------------------------------------------------------+-----------+-----------+----------
+  1 | rol_app_lectura | SELECT id_usuario, nombre, email FROM usuario LIMIT 1                                                     | permitido | permitido | t
+  2 | rol_app_lectura | SELECT password_hash FROM usuario LIMIT 1                                                                 | denegado  | denegado  | t
+  3 | rol_app_lectura | SELECT telefono FROM usuario LIMIT 1                                                                      | denegado  | denegado  | t
+  4 | rol_app_lectura | INSERT INTO categoria (nombre) VALUES ('x')                                                               | denegado  | denegado  | t
+  5 | app_web         | INSERT INTO pedido (id_cliente, forma_pago) VALUES ((SELECT min(id_cliente) FROM cliente), 'EFECTIVO')    | permitido | permitido | t
+  6 | app_web         | UPDATE producto SET stock = stock - 1 WHERE id_producto = (SELECT min(id_producto) FROM producto)         | permitido | permitido | t
+  7 | app_web         | UPDATE producto SET precio_lista = 1 WHERE id_producto = (SELECT min(id_producto) FROM producto)          | denegado  | denegado  | t
+  8 | app_web         | DELETE FROM detalle_pedido WHERE id_pedido = (SELECT min(id_pedido) FROM pedido)                          | denegado  | denegado  | t
+  9 | app_web         | SELECT fn_autenticar('nadie@correo.test', 'x')                                                            | permitido | permitido | t
+ 10 | app_web         | SELECT fn_resetear_password(17, 'ClaveNueva-2026')                                                        | denegado  | denegado  | t
+ 11 | app_web         | SELECT * FROM auditoria_acceso LIMIT 1                                                                    | denegado  | denegado  | t
+ 12 | app_web         | GRANT admin_datos TO rol_reportes                                                                         | denegado  | denegado  | t
+ 13 | app_web         | GRANT rol_soporte TO app_web                                                                              | denegado  | denegado  | t
+ 14 | app_web         | CREATE TABLE public.tabla_intrusa (x int)                                                                 | denegado  | denegado  | t
+ 15 | rol_soporte     | SELECT telefono, bloqueado_hasta FROM usuario LIMIT 1                                                     | permitido | permitido | t
+ 16 | rol_soporte     | SELECT password_hash FROM usuario LIMIT 1                                                                 | denegado  | denegado  | t
+ 17 | rol_soporte     | UPDATE usuario SET activo = false WHERE id_usuario = 17                                                   | permitido | permitido | t
+ 18 | rol_soporte     | UPDATE usuario SET rol = 'ADMIN' WHERE id_usuario = 17                                                    | denegado  | denegado  | t
+ 19 | rol_soporte     | SELECT fn_resetear_password(17, 'ClaveNueva-2026')                                                        | permitido | permitido | t
+ 20 | rol_soporte     | SELECT * FROM pedido LIMIT 1                                                                              | denegado  | denegado  | t
+ 21 | rol_reportes    | SELECT count(*) FROM detalle_pedido                                                                       | permitido | permitido | t
+ 22 | rol_reportes    | SELECT * FROM cliente LIMIT 1                                                                             | denegado  | denegado  | t
+ 23 | rol_reportes    | SELECT nombre FROM usuario LIMIT 1                                                                        | denegado  | denegado  | t
+ 24 | rol_auditor     | SELECT * FROM auditoria_acceso LIMIT 1                                                                    | permitido | permitido | t
+ 25 | rol_auditor     | DELETE FROM auditoria_acceso                                                                              | denegado  | denegado  | t
+ 26 | admin_datos     | SELECT password_hash FROM public.usuario LIMIT 1                                                          | denegado  | denegado  | t
+ 27 | admin_datos     | SELECT count(*) FROM public.pedido                                                                        | denegado  | denegado  | t
+ 28 | app_web         | UPDATE pedido SET deleted_at = now() WHERE id_pedido = (SELECT min(id_pedido) FROM pedido)                | permitido | permitido | t
+ 29 | app_web         | UPDATE pedido SET id_cliente = id_cliente WHERE id_pedido = (SELECT min(id_pedido) FROM pedido)           | denegado  | denegado  | t
+ 30 | app_web         | UPDATE detalle_pedido SET precio_unitario = 1 WHERE id_pedido = (SELECT min(id_pedido) FROM pedido)       | denegado  | denegado  | t
+ 31 | rol_soporte     | SELECT fn_resetear_password((SELECT min(id_usuario) FROM usuario WHERE rol = 'ADMIN'), 'ClaveNueva-2026') | denegado  | denegado  | t
+(31 rows)
+
+== 4. ALTER DEFAULT PRIVILEGES en acción: tabla nueva creada por el dueño (se revierte) ==
+BEGIN
+SET
+CREATE TABLE
+CREATE FUNCTION
+RESET
+      objeto       |                  acl                  
+-------------------+---------------------------------------
+ tabla_futura_demo | 
+ fn_futura_demo()  | {food_store_owner=X/food_store_owner}
+(2 rows)
+
+ROLLBACK
