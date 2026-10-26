@@ -64,6 +64,10 @@ case "$PARTE" in
     echo "Log en docs/log_auditoria_prueba.txt"
     ;;
   C)
+    # Estado inicial limpio del laboratorio: registro de accesos vacío y cuenta objetivo sin
+    # intentos previos (corridas anteriores del simulacro o de las pruebas de la Parte A).
+    su_psql -q -c "TRUNCATE auditoria_acceso RESTART IDENTITY" \
+               -c "UPDATE usuario SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id_usuario = 17"
     preparar_credenciales
     inicio=$(stat -c %s "$PGLOG")
     psql -X "host=127.0.0.1 dbname=$DB user=app_web application_name=sqlcli sslmode=require" \

@@ -1,0 +1,49 @@
+Pager usage is off.
+ current_user | inet_client_addr | current_setting 
+--------------+------------------+-----------------
+ app_web      | 127.0.0.1        | sqlcli
+(1 row)
+
+== C.1 Paso 1: intentos fallidos contra fn_autenticar ==
+ fn_autenticar 
+---------------
+ f
+(1 row)
+
+ fn_autenticar 
+---------------
+ f
+(1 row)
+
+ fn_autenticar 
+---------------
+ f
+(1 row)
+
+ fn_autenticar 
+---------------
+ f
+(1 row)
+
+== C.1 Paso 2: inicio de sesión exitoso ==
+ fn_autenticar 
+---------------
+ t
+(1 row)
+
+== C.1 Paso 3: lectura masiva de usuario ==
+psql:/home/claude/basededatos2/tp7/sql/simulacro_incidente.sql:38: ERROR:  permission denied for table usuario
+ count 
+-------
+  2000
+(1 row)
+
+== C.1 Paso 4: intentos de escalamiento ==
+psql:/home/claude/basededatos2/tp7/sql/simulacro_incidente.sql:48: ERROR:  permission denied to grant role "admin_datos"
+DETAIL:  Only roles with the ADMIN option on role "admin_datos" may grant this role.
+psql:/home/claude/basededatos2/tp7/sql/simulacro_incidente.sql:50: ERROR:  permission denied to grant role "admin_datos"
+DETAIL:  Only roles with the ADMIN option on role "admin_datos" may grant this role.
+psql:/home/claude/basededatos2/tp7/sql/simulacro_incidente.sql:52: ERROR:  permission denied to set role "admin_datos"
+psql:/home/claude/basededatos2/tp7/sql/simulacro_incidente.sql:54: ERROR:  permission denied for function fn_resetear_password
+psql:/home/claude/basededatos2/tp7/sql/simulacro_incidente.sql:56: ERROR:  permission denied for table auditoria_acceso
+== C.1 Fin del simulacro ==

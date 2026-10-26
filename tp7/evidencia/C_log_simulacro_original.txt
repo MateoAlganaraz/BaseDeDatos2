@@ -1,0 +1,47 @@
+2026-10-26 09:42:57.197 -03 [848] [unknown]@[unknown] 127.0.0.1 app=[unknown] LOG:  connection received: host=127.0.0.1 port=53614
+2026-10-26 09:42:57.205 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=[unknown] LOG:  connection authenticated: identity="app_web" method=scram-sha-256 (/etc/postgresql/16/main/pg_hba.conf:125)
+2026-10-26 09:42:57.205 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=[unknown] LOG:  connection authorized: user=app_web database=food_store_tp7_lab application_name=sqlcli SSL enabled (protocol=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384, bits=256)
+2026-10-26 09:42:57.206 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SELECT current_user, inet_client_addr(), current_setting('application_name');
+2026-10-26 09:42:57.206 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SELECT fn_autenticar('tomas.morales.17@correo.test', '123456');
+2026-10-26 09:42:57.212 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  fn_autenticar: intento fallido id_usuario=17 intentos=1
+2026-10-26 09:42:57.212 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli CONTEXT:  PL/pgSQL function fn_autenticar(text,text) line 37 at RAISE
+2026-10-26 09:42:57.212 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  SELECT fn_autenticar('tomas.morales.17@correo.test', '123456');
+2026-10-26 09:42:57.212 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SELECT fn_autenticar('tomas.morales.17@correo.test', 'foodstore');
+2026-10-26 09:42:57.215 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  fn_autenticar: intento fallido id_usuario=17 intentos=2
+2026-10-26 09:42:57.215 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli CONTEXT:  PL/pgSQL function fn_autenticar(text,text) line 37 at RAISE
+2026-10-26 09:42:57.215 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  SELECT fn_autenticar('tomas.morales.17@correo.test', 'foodstore');
+2026-10-26 09:42:57.216 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SELECT fn_autenticar('tomas.morales.17@correo.test', 'Mendoza2026');
+2026-10-26 09:42:57.219 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  fn_autenticar: intento fallido id_usuario=17 intentos=3
+2026-10-26 09:42:57.219 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli CONTEXT:  PL/pgSQL function fn_autenticar(text,text) line 37 at RAISE
+2026-10-26 09:42:57.219 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  SELECT fn_autenticar('tomas.morales.17@correo.test', 'Mendoza2026');
+2026-10-26 09:42:57.219 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SELECT fn_autenticar('tomas.morales.17@correo.test', 'FoodStore2025!');
+2026-10-26 09:42:57.223 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  fn_autenticar: intento fallido id_usuario=17 intentos=4
+2026-10-26 09:42:57.223 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli CONTEXT:  PL/pgSQL function fn_autenticar(text,text) line 37 at RAISE
+2026-10-26 09:42:57.223 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  SELECT fn_autenticar('tomas.morales.17@correo.test', 'FoodStore2025!');
+2026-10-26 09:42:57.223 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SELECT fn_autenticar('tomas.morales.17@correo.test', 'FoodStore2026!');
+2026-10-26 09:42:57.226 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  fn_autenticar: inicio de sesion correcto id_usuario=17
+2026-10-26 09:42:57.226 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli CONTEXT:  PL/pgSQL function fn_autenticar(text,text) line 27 at RAISE
+2026-10-26 09:42:57.226 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  SELECT fn_autenticar('tomas.morales.17@correo.test', 'FoodStore2026!');
+2026-10-26 09:42:57.227 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SELECT * FROM usuario;
+2026-10-26 09:42:57.227 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli ERROR:  permission denied for table usuario
+2026-10-26 09:42:57.227 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  SELECT * FROM usuario;
+2026-10-26 09:42:57.227 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SELECT id_usuario, nombre, apellido, email, rol, activo FROM usuario;
+2026-10-26 09:42:57.231 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SELECT count(*) FROM usuario;
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: GRANT admin_datos TO rol_reportes;
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli ERROR:  permission denied to grant role "admin_datos"
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli DETAIL:  Only roles with the ADMIN option on role "admin_datos" may grant this role.
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  GRANT admin_datos TO rol_reportes;
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: GRANT admin_datos TO app_web;
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli ERROR:  permission denied to grant role "admin_datos"
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli DETAIL:  Only roles with the ADMIN option on role "admin_datos" may grant this role.
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  GRANT admin_datos TO app_web;
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SET ROLE admin_datos;
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli ERROR:  permission denied to set role "admin_datos"
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  SET ROLE admin_datos;
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: SELECT fn_resetear_password(1, 'Intrusion-2026-xx');
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli ERROR:  permission denied for function fn_resetear_password
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  SELECT fn_resetear_password(1, 'Intrusion-2026-xx');
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  statement: DELETE FROM auditoria_acceso;
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli ERROR:  permission denied for table auditoria_acceso
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli STATEMENT:  DELETE FROM auditoria_acceso;
+2026-10-26 09:42:57.232 -03 [848] app_web@food_store_tp7_lab 127.0.0.1 app=sqlcli LOG:  disconnection: session time: 0:00:00.034 user=app_web database=food_store_tp7_lab host=127.0.0.1 port=53614

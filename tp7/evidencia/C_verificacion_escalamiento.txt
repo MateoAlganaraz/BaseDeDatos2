@@ -1,0 +1,36 @@
+Pager usage is off.
+SET
+== C.2.1 Membresías en admin_datos (esperado: ninguna) ==
+ miembro | rol 
+---------+-----
+(0 rows)
+
+== C.2.2 Membresías de app_web y rol_reportes (esperado: sin cambios respecto de roles.sql) ==
+ miembro |   es_miembro_de   | inherit_option | set_option 
+---------+-------------------+----------------+------------
+ app_web | rol_app_escritura | t              | t
+ app_web | rol_app_lectura   | t              | t
+(2 rows)
+
+== C.2.3 La cuenta 1 no recibió un reseteo de contraseña (esperado: 0 eventos RESET_PASSWORD) ==
+ resets_cuenta_1 
+-----------------
+               0
+(1 row)
+
+== C.2.4 Registro de accesos de la aplicación durante el simulacro (application_name sqlcli) ==
+ id_evento |          fecha          |    evento     | id_usuario | rol_db  | ip_origen | aplicacion 
+-----------+-------------------------+---------------+------------+---------+-----------+------------
+         1 | 2026-10-26 09:42:57.211 | LOGIN_FALLIDO |         17 | app_web | 127.0.0.1 | sqlcli
+         2 | 2026-10-26 09:42:57.215 | LOGIN_FALLIDO |         17 | app_web | 127.0.0.1 | sqlcli
+         3 | 2026-10-26 09:42:57.219 | LOGIN_FALLIDO |         17 | app_web | 127.0.0.1 | sqlcli
+         4 | 2026-10-26 09:42:57.223 | LOGIN_FALLIDO |         17 | app_web | 127.0.0.1 | sqlcli
+         5 | 2026-10-26 09:42:57.226 | LOGIN_OK      |         17 | app_web | 127.0.0.1 | sqlcli
+(5 rows)
+
+== C.2.5 Estado de la cuenta atacada ==
+ id_usuario |   rol    | activo | intentos_fallidos | bloqueado_hasta 
+------------+----------+--------+-------------------+-----------------
+         17 | OPERADOR | t      |                 0 | 
+(1 row)
+
