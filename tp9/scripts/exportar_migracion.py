@@ -45,12 +45,12 @@ for d in docs:
     c = d["cliente"]
     bloques.append("\n".join([
         "  {",
-        f"    _id: NumberLong({d['_id']}),",
+        f"    _id: NumberLong(\"{d['_id']}\"),",
         f"    fecha: {fecha(d['fecha'])},",
         f"    estado: {s(d['estado'])},",
         f"    anulado_en: {fecha(d['anulado_en'])},",
         f"    forma_pago: {s(d['forma_pago'])},",
-        f"    cliente: {{ id_cliente: NumberLong({c['id_cliente']}), nombre: {s(c['nombre'])}, "
+        f"    cliente: {{ id_cliente: NumberLong(\"{c['id_cliente']}\"), nombre: {s(c['nombre'])}, "
         f"apellido: {s(c['apellido'])}, email: {s(c['email'])} }},",
         "    lineas: [",
         ",\n".join(linea(l) for l in d["lineas"]),

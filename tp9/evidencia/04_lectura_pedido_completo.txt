@@ -1,0 +1,38 @@
+### PostgreSQL (base completa)
+Pager usage is off.
+                                                                       QUERY PLAN                                                                       
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=28.83..28.94 rows=3 width=124) (actual time=0.086..0.087 rows=1 loops=1)
+   Group Key: c.id_cliente
+   Buffers: shared hit=17
+   ->  Sort  (cost=28.83..28.84 rows=3 width=75) (actual time=0.060..0.061 rows=3 loops=1)
+         Sort Key: c.id_cliente, d.id_producto
+         Sort Method: quicksort  Memory: 25kB
+         Buffers: shared hit=17
+         ->  Nested Loop  (cost=1.14..28.81 rows=3 width=75) (actual time=0.037..0.039 rows=3 loops=1)
+               Buffers: shared hit=14
+               ->  Nested Loop  (cost=0.71..16.75 rows=1 width=50) (actual time=0.029..0.030 rows=1 loops=1)
+                     Buffers: shared hit=10
+                     ->  Index Scan using pedido_pkey on pedido p  (cost=0.42..8.44 rows=1 width=28) (actual time=0.022..0.022 rows=1 loops=1)
+                           Index Cond: (id_pedido = 2118)
+                           Buffers: shared hit=7
+                     ->  Index Scan using cliente_pkey on cliente c  (cost=0.29..8.30 rows=1 width=30) (actual time=0.003..0.003 rows=1 loops=1)
+                           Index Cond: (id_cliente = p.id_cliente)
+                           Buffers: shared hit=3
+               ->  Index Scan using pk_detalle_pedido on detalle_pedido d  (cost=0.43..12.03 rows=3 width=33) (actual time=0.008..0.008 rows=3 loops=1)
+                     Index Cond: (id_pedido = 2118)
+                     Buffers: shared hit=4
+ Planning:
+   Buffers: shared hit=233
+ Planning Time: 0.650 ms
+ Execution Time: 0.170 ms
+(24 rows)
+
+
+### MongoDB (colección migrada)
+{
+  etapa: 'EXPRESS_IXSCAN',
+  documentos_examinados: 1,
+  devueltos: 1,
+  tiempo_ms: 0
+}

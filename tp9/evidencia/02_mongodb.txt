@@ -1,0 +1,131 @@
+
+== 2. Migración con insertMany() ==
+Documentos insertados: 12
+
+== 3. Verificación de la migración ==
+{
+  documentos: 12,
+  lineas: 34,
+  importe_total_vigente: '148303.00'
+}
+
+== 3. Documento completo de ejemplo (pedido 2118) ==
+{
+  _id: Long('2118'),
+  fecha: ISODate('2026-01-06T06:00:42.000Z'),
+  estado: 'VIGENTE',
+  anulado_en: null,
+  forma_pago: 'EFECTIVO',
+  cliente: {
+    id_cliente: Long('5659'),
+    nombre: 'Cliente05659',
+    apellido: 'TP605659',
+    email: 'tp6_cliente_05659@example.invalid'
+  },
+  lineas: [
+    {
+      id_producto: 3373,
+      producto: 'TP6_PRODUCTO_03373',
+      categoria: 'Almacén',
+      cantidad: 3,
+      precio_unitario: Decimal128('1251.00'),
+      subtotal: Decimal128('3753.00'),
+      anulada: false
+    },
+    {
+      id_producto: 5454,
+      producto: 'TP6_PRODUCTO_05454',
+      categoria: 'Almacén',
+      cantidad: 2,
+      precio_unitario: Decimal128('2248.00'),
+      subtotal: Decimal128('4496.00'),
+      anulada: false
+    },
+    {
+      id_producto: 7535,
+      producto: 'TP6_PRODUCTO_07535',
+      categoria: 'Mascotas',
+      cantidad: 1,
+      precio_unitario: Decimal128('2895.00'),
+      subtotal: Decimal128('2895.00'),
+      anulada: false
+    }
+  ],
+  total: Decimal128('11144.00'),
+  cantidad_lineas_vigentes: 3
+}
+
+== 3. El validador rechaza documentos que violan las reglas (se esperan 3 rechazos) ==
+RECHAZADO: total que no coincide con las líneas (regla 1) -> código 121: Document failed validation [$expr (reglas de total o productos repetidos)]
+RECHAZADO: producto repetido en el mismo pedido (regla 2) -> código 121: Document failed validation [$expr (reglas de total o productos repetidos)]
+RECHAZADO: cantidad 0 (regla 2) -> código 121: Document failed validation [$jsonSchema lineas.cantidad: minimum (comparison failed)]
+Documentos después de las pruebas: 12
+
+== 4.a Todos los pedidos con su identificador y estado ==
+1	VIGENTE
+2	VIGENTE
+3	VIGENTE
+7	ANULADO
+57	ANULADO
+107	ANULADO
+2118	VIGENTE
+5355	VIGENTE
+5644	VIGENTE
+8881	VIGENTE
+12118	VIGENTE
+598881	VIGENTE
+
+== 4.b Pedidos con estado ANULADO ==
+{
+  cantidad: 3,
+  ids: [
+    7,
+    57,
+    107
+  ]
+}
+
+== 4.c (primera versión) Pedidos con el producto 3373 en el arreglo de líneas ==
+{
+  cantidad: 6,
+  ids: [
+    2118,
+    5355,
+    5644,
+    8881,
+    12118,
+    598881
+  ]
+}
+
+== 4.c (corregida) El producto 3373 en una línea NO anulada: $elemMatch sobre el mismo elemento ==
+{
+  cantidad: 5,
+  ids: [
+    2118,
+    5355,
+    5644,
+    8881,
+    12118
+  ]
+}
+
+== 4.c Plan de la consulta corregida (usa el índice multiclave lineas.id_producto) ==
+{
+  etapas: [
+    'FETCH',
+    'IXSCAN(lineas.id_producto_1)'
+  ],
+  documentos_examinados: 6,
+  devueltos: 5
+}
+
+== 4.d Pedidos con total > 20000 (umbral entre la mediana 14.487 y el P75 33.515 del subconjunto) ==
+7	ANULADO	46524.00
+5355	VIGENTE	44182.00
+3	VIGENTE	42340.00
+107	ANULADO	30574.00
+
+== 4.d Solo pedidos VIGENTES con total > 20000 ==
+5355	44182.00
+3	42340.00

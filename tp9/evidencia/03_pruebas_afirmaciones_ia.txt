@@ -1,0 +1,25 @@
+### 1. Servidor standalone (127.0.0.1:27017)
+Servidor: MongoDB 8.0.4 (standalone)
+
+== Afirmación 1: el validador también controla las ACTUALIZACIONES del total ==
+{
+  antes_total: '11144.00',
+  antes_cantidades: [
+    3,
+    2,
+    1
+  ]
+}
+1.a RECHAZADO por el validador: código 121 - Document failed validation
+1.b ACEPTADO: modificadas=1; total 11144.00 -> 12395.00 (+ 1251.00)
+    revertido: total = 11144.00
+
+== Afirmación 2: transacción multi-documento (pedido + descuento de stock) ==
+Transacción FALLIDA: código 20 - Transaction numbers are only allowed on a replica set member or mongos
+Estado tras el fallo: stock=5, pedidos=0
+
+### 2. Replica set de un nodo (127.0.0.1:27018)
+Servidor: MongoDB 8.0.4 (replica set "rs_tp9")
+
+== Afirmación 2: transacción multi-documento (pedido + descuento de stock) ==
+Transacción CONFIRMADA: stock=3, pedidos=1

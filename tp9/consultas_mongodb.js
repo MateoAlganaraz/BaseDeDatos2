@@ -51,7 +51,7 @@ db.createCollection("pedidos", {
                 properties: {
                   id_producto: { bsonType: "int" },
                   cantidad: { bsonType: "int", minimum: 1 },
-                  precio_unitario: { bsonType: "decimal", exclusiveMinimum: 0 },
+                  precio_unitario: { bsonType: "decimal", minimum: 0, exclusiveMinimum: true },
                   subtotal: { bsonType: "decimal" },
                   anulada: { bsonType: "bool" }
                 }
@@ -105,37 +105,46 @@ printjson({
 });
 
 SEP("3. Documento completo de ejemplo (pedido 2118)");
-printjson(db.pedidos.findOne({ _id: NumberLong(2118) }));
+printjson(db.pedidos.findOne({ _id: NumberLong("2118") }));
 
 SEP("3. El validador rechaza documentos que violan las reglas (se esperan 3 rechazos)");
 const invalidos = [
   { caso: "total que no coincide con las líneas (regla 1)",
-    doc: { _id: NumberLong(900001), fecha: new Date(), estado: "VIGENTE", anulado_en: null, forma_pago: "EFECTIVO",
-           cliente: { id_cliente: NumberLong(1), nombre: "Prueba", apellido: "Prueba", email: "prueba@example.invalid" },
+    doc: { _id: NumberLong("900001"), fecha: new Date(), estado: "VIGENTE", anulado_en: null, forma_pago: "EFECTIVO",
+           cliente: { id_cliente: NumberLong("1"), nombre: "Prueba", apellido: "Prueba", email: "prueba@example.invalid" },
            lineas: [{ id_producto: NumberInt(1), producto: "X", cantidad: NumberInt(2), precio_unitario: NumberDecimal("100.00"),
                       subtotal: NumberDecimal("200.00"), anulada: false }],
            total: NumberDecimal("999.00") } },
   { caso: "producto repetido en el mismo pedido (regla 2)",
-    doc: { _id: NumberLong(900002), fecha: new Date(), estado: "VIGENTE", anulado_en: null, forma_pago: "EFECTIVO",
-           cliente: { id_cliente: NumberLong(1), nombre: "Prueba", apellido: "Prueba", email: "prueba@example.invalid" },
+    doc: { _id: NumberLong("900002"), fecha: new Date(), estado: "VIGENTE", anulado_en: null, forma_pago: "EFECTIVO",
+           cliente: { id_cliente: NumberLong("1"), nombre: "Prueba", apellido: "Prueba", email: "prueba@example.invalid" },
            lineas: [{ id_producto: NumberInt(1), producto: "X", cantidad: NumberInt(1), precio_unitario: NumberDecimal("100.00"),
                       subtotal: NumberDecimal("100.00"), anulada: false },
                     { id_producto: NumberInt(1), producto: "X", cantidad: NumberInt(1), precio_unitario: NumberDecimal("100.00"),
                       subtotal: NumberDecimal("100.00"), anulada: false }],
            total: NumberDecimal("200.00") } },
   { caso: "cantidad 0 (regla 2)",
-    doc: { _id: NumberLong(900003), fecha: new Date(), estado: "VIGENTE", anulado_en: null, forma_pago: "EFECTIVO",
-           cliente: { id_cliente: NumberLong(1), nombre: "Prueba", apellido: "Prueba", email: "prueba@example.invalid" },
+    doc: { _id: NumberLong("900003"), fecha: new Date(), estado: "VIGENTE", anulado_en: null, forma_pago: "EFECTIVO",
+           cliente: { id_cliente: NumberLong("1"), nombre: "Prueba", apellido: "Prueba", email: "prueba@example.invalid" },
            lineas: [{ id_producto: NumberInt(1), producto: "X", cantidad: NumberInt(0), precio_unitario: NumberDecimal("100.00"),
                       subtotal: NumberDecimal("0.00"), anulada: false }],
            total: NumberDecimal("0.00") } }
 ];
+// Resume errInfo: qué cláusula del validador falló ($jsonSchema o $expr) y sobre qué campo.
+function resumirValidacion(d, ruta = []) {
+  if (!d || typeof d !== "object") return "";
+  if (Array.isArray(d)) return d.map((x) => resumirValidacion(x, ruta)).filter(Boolean).join("; ");
+  if (d.operatorName === "$expr") return "$expr (reglas de total o productos repetidos)";
+  const r = d.propertyName ? [...ruta, d.propertyName] : ruta;
+  if (d.reason && d.operatorName !== "items") return `$jsonSchema ${r.join(".")}: ${d.operatorName} (${d.reason})`;
+  return Object.values(d).map((v) => resumirValidacion(v, r)).filter(Boolean).join("; ");
+}
 for (const { caso, doc } of invalidos) {
   try {
     db.pedidos.insertOne(doc);
     print(`ACEPTADO (no debería): ${caso}`);
   } catch (e) {
-    print(`RECHAZADO: ${caso} -> código ${e.code} (${e.codeName})`);
+    print(`RECHAZADO: ${caso} -> código ${e.code}: ${e.message} [${resumirValidacion(e.errInfo?.details)}]`);
   }
 }
 print(`Documentos después de las pruebas: ${db.pedidos.countDocuments()}`);
