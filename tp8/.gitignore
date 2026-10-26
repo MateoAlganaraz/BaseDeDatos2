@@ -1,0 +1,5 @@
+# Respaldos y logs con datos de Food Store: no se versionan (SPEC_U6, regla 6).
+backups/
+logs/
+*.dump
+*.counts.csv

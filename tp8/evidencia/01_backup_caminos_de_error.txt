@@ -1,0 +1,23 @@
+### Ejecución 1: camino de error (base inexistente)
+$ DB_NAME=no_existe ./backup_foodstore.sh; echo "exit=$?"
+2026-10-26T13:18:29+0000 INICIO respaldo de no_existe en localhost:5432 como foodstore_backup
+2026-10-26T13:18:29+0000 pg_dump: pg_dump (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)
+psql: error: connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  database "no_existe" does not exist
+2026-10-26T13:18:29+0000 ERROR respaldo de no_existe fallido (código 2). Archivo parcial eliminado.
+exit=2
+
+### Ejecución 2: camino de error (servidor inaccesible, puerto 5999)
+$ PGPORT=5999 ./backup_foodstore.sh; echo "exit=$?"
+2026-10-26T13:18:29+0000 INICIO respaldo de foodstore en localhost:5999 como foodstore_backup
+2026-10-26T13:18:29+0000 pg_dump: pg_dump (PostgreSQL) 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)
+psql: error: connection to server at "localhost" (127.0.0.1), port 5999 failed: Connection refused
+	Is the server running on that host and accepting TCP/IP connections?
+2026-10-26T13:18:29+0000 ERROR respaldo de foodstore fallido (código 2). Archivo parcial eliminado.
+exit=2
+
+$ ls -la backups/
+total 8
+drwx------ 2 root root 4096 Oct 26 13:18 .
+drwxr-xr-x 6 root root 4096 Oct 26 13:18 ..
+-rw------- 1 root root    0 Oct 26 13:18 foodstore_20261026_131829.counts.csv
+-rw------- 1 root root    0 Oct 26 13:18 no_existe_20261026_131829.counts.csv
