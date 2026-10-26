@@ -1,0 +1,131 @@
+Pager usage is off.
+CREATE VIEW
+CREATE VIEW
+== D.3.1 La agregación de Q_anon, ejecutada como rol_reportes (solo tiene SELECT sobre usuario_anon) ==
+BEGIN
+SET
+ filas_q_anon | usuarios | activos 
+--------------+----------+---------
+           74 |     2000 |    1914
+(1 row)
+
+ROLLBACK
+== D.3.2 Resultados lado a lado (Q_real | Q_anon) ==
+  mes_alta  |    rol     | usuarios_real | usuarios_anon | activos_real | activos_anon | igual 
+------------+------------+---------------+---------------+--------------+--------------+-------
+ 2025-01-01 | ADMIN      |             2 |             2 |            2 |            2 | t
+ 2025-01-01 | CLIENTE    |            80 |            80 |           77 |           77 | t
+ 2025-01-01 | OPERADOR   |             5 |             5 |            5 |            5 | t
+ 2025-01-01 | REPARTIDOR |             6 |             6 |            6 |            6 | t
+ 2025-02-01 | CLIENTE    |            70 |            70 |           69 |           69 | t
+ 2025-02-01 | OPERADOR   |             7 |             7 |            7 |            7 | t
+ 2025-02-01 | REPARTIDOR |             8 |             8 |            6 |            6 | t
+ 2025-03-01 | CLIENTE    |            83 |            83 |           78 |           78 | t
+ 2025-03-01 | OPERADOR   |             5 |             5 |            5 |            5 | t
+ 2025-03-01 | REPARTIDOR |             6 |             6 |            6 |            6 | t
+ 2025-04-01 | ADMIN      |             3 |             3 |            3 |            3 | t
+ 2025-04-01 | CLIENTE    |            75 |            75 |           72 |           72 | t
+ 2025-04-01 | OPERADOR   |             6 |             6 |            5 |            5 | t
+ 2025-04-01 | REPARTIDOR |             7 |             7 |            7 |            7 | t
+ 2025-05-01 | CLIENTE    |            80 |            80 |           77 |           77 | t
+ 2025-05-01 | OPERADOR   |             7 |             7 |            6 |            6 | t
+ 2025-05-01 | REPARTIDOR |             7 |             7 |            7 |            7 | t
+ 2025-06-01 | CLIENTE    |            78 |            78 |           74 |           74 | t
+ 2025-06-01 | OPERADOR   |             5 |             5 |            5 |            5 | t
+ 2025-06-01 | REPARTIDOR |             7 |             7 |            7 |            7 | t
+ 2025-07-01 | ADMIN      |             3 |             3 |            3 |            3 | t
+ 2025-07-01 | CLIENTE    |            78 |            78 |           74 |           74 | t
+ 2025-07-01 | OPERADOR   |             5 |             5 |            5 |            5 | t
+ 2025-07-01 | REPARTIDOR |             8 |             8 |            8 |            8 | t
+ 2025-08-01 | CLIENTE    |            79 |            79 |           75 |           75 | t
+ 2025-08-01 | OPERADOR   |             7 |             7 |            7 |            7 | t
+ 2025-08-01 | REPARTIDOR |             8 |             8 |            8 |            8 | t
+ 2025-09-01 | CLIENTE    |            78 |            78 |           75 |           75 | t
+ 2025-09-01 | OPERADOR   |             5 |             5 |            5 |            5 | t
+ 2025-09-01 | REPARTIDOR |             8 |             8 |            6 |            6 | t
+ 2025-10-01 | ADMIN      |             3 |             3 |            3 |            3 | t
+ 2025-10-01 | CLIENTE    |            78 |            78 |           75 |           75 | t
+ 2025-10-01 | OPERADOR   |             5 |             5 |            5 |            5 | t
+ 2025-10-01 | REPARTIDOR |             8 |             8 |            8 |            8 | t
+ 2025-11-01 | CLIENTE    |            77 |            77 |           74 |           74 | t
+ 2025-11-01 | OPERADOR   |             7 |             7 |            7 |            7 | t
+ 2025-11-01 | REPARTIDOR |             6 |             6 |            6 |            6 | t
+ 2025-12-01 | CLIENTE    |            79 |            79 |           76 |           76 | t
+ 2025-12-01 | OPERADOR   |             4 |             4 |            3 |            3 | t
+ 2025-12-01 | REPARTIDOR |            10 |            10 |            9 |            9 | t
+ 2026-01-01 | ADMIN      |             3 |             3 |            3 |            3 | t
+ 2026-01-01 | CLIENTE    |            80 |            80 |           76 |           76 | t
+ 2026-01-01 | OPERADOR   |             4 |             4 |            4 |            4 | t
+ 2026-01-01 | REPARTIDOR |             6 |             6 |            6 |            6 | t
+ 2026-02-01 | CLIENTE    |            71 |            71 |           68 |           68 | t
+ 2026-02-01 | OPERADOR   |             7 |             7 |            7 |            7 | t
+ 2026-02-01 | REPARTIDOR |             6 |             6 |            6 |            6 | t
+ 2026-03-01 | CLIENTE    |            79 |            79 |           75 |           75 | t
+ 2026-03-01 | OPERADOR   |             4 |             4 |            4 |            4 | t
+ 2026-03-01 | REPARTIDOR |            10 |            10 |           10 |           10 | t
+ 2026-04-01 | ADMIN      |             3 |             3 |            3 |            3 | t
+ 2026-04-01 | CLIENTE    |            77 |            77 |           74 |           74 | t
+ 2026-04-01 | OPERADOR   |             4 |             4 |            4 |            4 | t
+ 2026-04-01 | REPARTIDOR |             6 |             6 |            5 |            5 | t
+ 2026-05-01 | CLIENTE    |            79 |            79 |           76 |           76 | t
+ 2026-05-01 | OPERADOR   |             6 |             6 |            6 |            6 | t
+ 2026-05-01 | REPARTIDOR |             8 |             8 |            7 |            7 | t
+ 2026-06-01 | CLIENTE    |            77 |            77 |           73 |           73 | t
+ 2026-06-01 | OPERADOR   |             5 |             5 |            5 |            5 | t
+ 2026-06-01 | REPARTIDOR |             8 |             8 |            8 |            8 | t
+ 2026-07-01 | ADMIN      |             2 |             2 |            2 |            2 | t
+ 2026-07-01 | CLIENTE    |            79 |            79 |           77 |           77 | t
+ 2026-07-01 | OPERADOR   |             6 |             6 |            4 |            4 | t
+ 2026-07-01 | REPARTIDOR |             6 |             6 |            6 |            6 | t
+ 2026-08-01 | ADMIN      |             1 |             1 |            1 |            1 | t
+ 2026-08-01 | CLIENTE    |            79 |            79 |           75 |           75 | t
+ 2026-08-01 | OPERADOR   |             5 |             5 |            5 |            5 | t
+ 2026-08-01 | REPARTIDOR |             8 |             8 |            8 |            8 | t
+ 2026-09-01 | CLIENTE    |            76 |            76 |           72 |           72 | t
+ 2026-09-01 | OPERADOR   |             8 |             8 |            8 |            8 | t
+ 2026-09-01 | REPARTIDOR |             6 |             6 |            6 |            6 | t
+ 2026-10-01 | CLIENTE    |            67 |            67 |           63 |           63 | t
+ 2026-10-01 | OPERADOR   |             4 |             4 |            4 |            4 | t
+ 2026-10-01 | REPARTIDOR |             7 |             7 |            7 |            7 | t
+(74 rows)
+
+== D.3.3 Equivalencia formal (esperado: 0 y 0) ==
+       control        | filas 
+----------------------+-------
+ Q_real EXCEPT Q_anon |     0
+ Q_anon EXCEPT Q_real |     0
+ grupos en Q_real     |    74
+ grupos en Q_anon     |    74
+(4 rows)
+
+== D.3.4 Totales por rol (los mismos en ambas) ==
+    rol     | usuarios_real | usuarios_anon | activos_real | activos_anon 
+------------+---------------+---------------+--------------+--------------
+ ADMIN      |            20 |            20 |           20 |           20
+ CLIENTE    |          1699 |          1699 |         1625 |         1625
+ OPERADOR   |           121 |           121 |          116 |          116
+ REPARTIDOR |           160 |           160 |          153 |          153
+(4 rows)
+
+== D.3.5 Tipos de columna de ambas consultas (deben coincidir) ==
+ consulta |      attname      |         tipo          
+----------+-------------------+-----------------------
+ q_anon   | cantidad_activos  | bigint
+ q_real   | cantidad_activos  | bigint
+ q_anon   | cantidad_usuarios | bigint
+ q_real   | cantidad_usuarios | bigint
+ q_anon   | mes_alta          | date
+ q_real   | mes_alta          | date
+ q_anon   | rol               | character varying(20)
+ q_real   | rol               | character varying(20)
+(8 rows)
+
+== D.3.6 Control negativo: la versión "ingenua" sin AT TIME ZONE, en una sesión con otra zona horaria ==
+BEGIN
+SET
+ grupos_distintos 
+------------------
+               28
+(1 row)
+
+ROLLBACK

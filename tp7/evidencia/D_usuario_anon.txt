@@ -1,0 +1,55 @@
+Pager usage is off.
+BEGIN
+DROP TABLE
+SELECT 2000
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+COMMENT
+ALTER TABLE
+GRANT
+COMMIT
+ANALYZE
+== D.1 Muestra de usuario_anon ==
+ id_anon |    nombre    |    apellido    |             email             |   rol   |  mes_alta  | activo 
+---------+--------------+----------------+-------------------------------+---------+------------+--------
+       1 | Nombre_00001 | Apellido_00001 | usuario_00001@ejemplo.invalid | CLIENTE | 2025-03-01 | t
+       2 | Nombre_00002 | Apellido_00002 | usuario_00002@ejemplo.invalid | CLIENTE | 2026-09-01 | t
+       3 | Nombre_00003 | Apellido_00003 | usuario_00003@ejemplo.invalid | CLIENTE | 2026-07-01 | t
+       4 | Nombre_00004 | Apellido_00004 | usuario_00004@ejemplo.invalid | CLIENTE | 2025-02-01 | t
+       5 | Nombre_00005 | Apellido_00005 | usuario_00005@ejemplo.invalid | CLIENTE | 2026-06-01 | t
+(5 rows)
+
+== D.1 Controles de anonimización (esperado: 0 coincidencias en las dos primeras filas) ==
+                 control                 | valor 
+-----------------------------------------+-------
+ emails reales presentes en usuario_anon |     0
+ nombre + apellido reales presentes      |     0
+ filas en usuario                        |  2000
+ filas en usuario_anon                   |  2000
+(4 rows)
+
+== D.1 Columnas de usuario_anon (no hay telefono, password_hash ni fecha exacta) ==
+ column_name |     data_type     
+-------------+-------------------
+ id_anon     | bigint
+ nombre      | text
+ apellido    | text
+ email       | text
+ rol         | character varying
+ mes_alta    | date
+ activo      | boolean
+(7 rows)
+
+== D.1 Tamaño mínimo de grupo por (rol, mes_alta): riesgo de reidentificación ==
+ grupo_minimo | grupos_con_menos_de_3 
+--------------+-----------------------
+            1 |                     3
+(1 row)
+
+== D.1 Permisos: reportes lee usuario_anon pero no usuario ==
+ reportes_lee_anon | reportes_lee_usuario | reportes_alguna_columna_usuario 
+-------------------+----------------------+---------------------------------
+ t                 | f                    | f
+(1 row)
+

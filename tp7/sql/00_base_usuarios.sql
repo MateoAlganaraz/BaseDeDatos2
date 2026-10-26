@@ -147,7 +147,7 @@ $fn$;
 -- Datos sintéticos: 2.000 usuarios con alta entre enero de 2025 y octubre de 2026.
 -- Costo bcrypt 6 solo para que la carga de laboratorio sea rápida.
 -- ---------------------------------------------------------------------
-INSERT INTO usuario (nombre, apellido, email, telefono, rol, password_hash, fecha_alta)
+INSERT INTO usuario (nombre, apellido, email, telefono, rol, password_hash, fecha_alta, activo)
 SELECT nom.v, ape.v,
        lower(format('%s.%s.%s@correo.test', translate(nom.v, 'áéíóúñ', 'aeioun'), translate(ape.v, 'áéíóúñ', 'aeioun'), s.n)),
        format('+54 261 4%s', lpad(mod(s.n * 7919, 1000000)::text, 6, '0')),
@@ -158,7 +158,8 @@ SELECT nom.v, ape.v,
            ELSE 'CLIENTE'
        END,
        extensiones.crypt(CASE WHEN s.n = 17 THEN 'FoodStore2026!' ELSE format('Lab-%s-%s', s.n, md5(s.n::text)) END, extensiones.gen_salt('bf', 6)),
-       timestamptz '2025-01-01 09:00-03' + (mod(s.n * 37, 664) * interval '1 day') + (mod(s.n * 911, 36000) * interval '1 second')
+       timestamptz '2025-01-01 09:00-03' + (mod(s.n * 37, 664) * interval '1 day') + (mod(s.n * 911, 36000) * interval '1 second'),
+       mod(s.n, 23) <> 0                                   -- ~4 % de cuentas deshabilitadas
 FROM generate_series(1, 2000) AS s(n)
 CROSS JOIN LATERAL (SELECT (ARRAY['Ana','Bruno','Carla','Diego','Elena','Facundo','Gabriela','Hernán','Inés','Julián',
                                   'Lucía','Martín','Natalia','Oscar','Paula','Ramiro','Sofía','Tomás','Valentina','Joaquín'])[1 + mod(s.n, 20)] AS v) AS nom
