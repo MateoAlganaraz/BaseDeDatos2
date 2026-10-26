@@ -15,6 +15,7 @@ La base y los scripts estan preparados para PostgreSQL. Ningun archivo afirma qu
 | TP5 - Unidad 3 Semana 1 | Índices, vistas y vistas materializadas | Plan de indexado medido, costo de escritura, vistas de reportes, seguridad por mínimo privilegio y resumen materializado. | Ejecutado sobre copias aisladas; mediciones reales en `tp5/informe_mediciones.md`. |
 | TP6 - Unidad 4 | FNBC y desnormalización controlada | Descomposición FNBC de `control_lote_almacen` con vista de compatibilidad; tabla resumen de ventas diarias por categoría mantenida por disparadores, con auditoría. | Ejecutado en `food_store_tp6_lab` (PostgreSQL 16.15); evidencia real en `tp6/evidencia/`. |
 | TP7 - Unidad 5 | Administración y seguridad | Roles de mínimo privilegio verificados, auditoría con log del servidor, simulacro de incidente reconstruido con IA, `usuario_anon` y bitácora de IA. | Ejecutado en `food_store_tp7_lab` (PostgreSQL 16.15); evidencia en `tp7/evidencia/` y `tp7/docs/`. |
+| TP8 - Unidad 6 | Mantenimiento, respaldo y recuperación | Plan de mantenimiento, respaldo `pg_dump -Fc` automatizable (.sh y .ps1), chequeo de salud, mantenimiento justificado y simulacro de restauración con RPO/RTO. | Ejecutado sobre `foodstore` y `foodstore_restore_test` (PostgreSQL 16.15); evidencia en `tp8/evidencia/`. |
 | TPI - Primera entrega parcial | Integración Unidades 1, 2 y 3 | Modelo ER, mapeo relacional, 3FN/BCNF, migración final, PL/pgSQL, triggers, borrado lógico y evidencia de concurrencia. | Ejecutado en `food_store_tpi_verificacion_final`; evidencia real en `tpi/evidencia/20260923_214500/`. |
 
 ## Estructura
@@ -30,6 +31,7 @@ La base y los scripts estan preparados para PostgreSQL. Ningun archivo afirma qu
 - `tp5/`: plan de índices, vistas, materializada, especificaciones, DUIA y scripts PostgreSQL/DBeaver de TP5.
 - `tp6/`: Unidad 4, FNBC (`tp_fnbc_control_lote.sql`), desnormalización controlada (`tp_desnormalizacion_top_categorias.sql`), carga de laboratorio, mediciones, variantes DBeaver, evidencia e informe PDF.
 - `tp7/`: Unidad 5, estructura `food-store-tp-u5/` de la consigna (`sql/`, `docs/`, `BITACORA.md`), orquestador, anonimizador, evidencia, variantes DBeaver e informe PDF.
+- `tp8/`: Unidad 6, `SPEC_U6.md`, scripts de respaldo y restauración (.sh y .ps1), `health_check.sql`, `maintenance.sql`, evidencia e `informe_u6.pdf`.
 - `tpi/`: scripts de integración, modelo ER, normalización, checklist, informe técnico y evidencia del TPI.
 
 ## Ejecucion segura
@@ -81,6 +83,10 @@ Parte 2: el top 5 de categorías del día pasó de 33,129 ms (`Parallel Seq Scan
 ## TP7 - Unidad 5
 
 La guía está en `tp7/README.md` y la bitácora de IA en `tp7/BITACORA.md`. Parte A: ocho roles con dueño sin login y permisos de columna, verificados con `\du`, `role_table_grants` y una comparación esperado vs. real (42 = 42). Parte B: auditoría nativa activada y probada; el log resultó ser un activo sensible porque guarda contraseñas probadas. Parte C: en el simulacro, los cinco intentos de escalamiento fallaron, y la reconstrucción de la IA se contrastó línea por línea con lo ejecutado. Parte D: `usuario_anon` reproduce los mismos agregados que `usuario` (`EXCEPT` 0 y 0). El informe es `tp7/DB_Mateo_Algañaraz.pdf`.
+
+## TP8 - Unidad 6
+
+La guía está en `tp8/README.md`. El respaldo de `foodstore` (18 MB, formato custom) se restauró en `foodstore_restore_test` con un RTO observado de 4,04 s. Las validaciones dieron conteos iguales, 0 filas inválidas y 18 = 18 restricciones. El RPO observado fue de 39 s frente a 24 h previstas. Con `pg_restore -j 2` el RTO bajó un 18 %. El informe es `tp8/informe_u6.pdf`.
 
 ## Como agregar los proximos trabajos practicos
 
