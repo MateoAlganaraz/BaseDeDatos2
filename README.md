@@ -14,6 +14,7 @@ La base y los scripts estan preparados para PostgreSQL. Ningun archivo afirma qu
 | TP4 - Unidad 2 Semana 4 | Reportes analiticos asistidos por IA | Consultas con joins, agregacion y ventana; lectura critica de planes; equivalencia formal; competencia y DUIA. | Ejecutado y documentado con planes reales en `tp4/evidencia/`. |
 | TP5 - Unidad 3 Semana 1 | Índices, vistas y vistas materializadas | Plan de indexado medido, costo de escritura, vistas de reportes, seguridad por mínimo privilegio y resumen materializado. | Ejecutado sobre copias aisladas; mediciones reales en `tp5/informe_mediciones.md`. |
 | TP6 - Unidad 4 | FNBC y desnormalización controlada | Descomposición FNBC de `control_lote_almacen` con vista de compatibilidad; tabla resumen de ventas diarias por categoría mantenida por disparadores, con auditoría. | Ejecutado en `food_store_tp6_lab` (PostgreSQL 16.15); evidencia real en `tp6/evidencia/`. |
+| TP7 - Unidad 5 | Administración y seguridad | Roles de mínimo privilegio verificados, auditoría con log del servidor, simulacro de incidente reconstruido con IA, `usuario_anon` y bitácora de IA. | Ejecutado en `food_store_tp7_lab` (PostgreSQL 16.15); evidencia en `tp7/evidencia/` y `tp7/docs/`. |
 | TPI - Primera entrega parcial | Integración Unidades 1, 2 y 3 | Modelo ER, mapeo relacional, 3FN/BCNF, migración final, PL/pgSQL, triggers, borrado lógico y evidencia de concurrencia. | Ejecutado en `food_store_tpi_verificacion_final`; evidencia real en `tpi/evidencia/20260923_214500/`. |
 
 ## Estructura
@@ -28,6 +29,7 @@ La base y los scripts estan preparados para PostgreSQL. Ningun archivo afirma qu
 - `tp4/`: scripts PostgreSQL y DBeaver, planes antes/despues, resultados, DUIA y PDF final de TP4.
 - `tp5/`: plan de índices, vistas, materializada, especificaciones, DUIA y scripts PostgreSQL/DBeaver de TP5.
 - `tp6/`: Unidad 4, FNBC (`tp_fnbc_control_lote.sql`), desnormalización controlada (`tp_desnormalizacion_top_categorias.sql`), carga de laboratorio, mediciones, variantes DBeaver, evidencia e informe PDF.
+- `tp7/`: Unidad 5, estructura `food-store-tp-u5/` de la consigna (`sql/`, `docs/`, `BITACORA.md`), orquestador, anonimizador, evidencia, variantes DBeaver e informe PDF.
 - `tpi/`: scripts de integración, modelo ER, normalización, checklist, informe técnico y evidencia del TPI.
 
 ## Ejecucion segura
@@ -75,6 +77,10 @@ La primera entrega parcial se resuelve en `tpi/`. El orden es: crear una copia d
 La guía completa está en `tp6/README.md`. Parte 1: `control_lote_almacen` tiene las DF `{LoteID, DepositoID} → ResponsableControlID` y `ResponsableControlID → DepositoID`; sus claves candidatas son `{LoteID, DepositoID}` y `{LoteID, ResponsableControlID}` y viola FNBC por la segunda DF. Se descompone en `responsable_deposito` y `control_lote_responsable`, con vista de compatibilidad por reunión natural; la migración se verificó con `EXCEPT` en ambos sentidos (0 diferencias).
 
 Parte 2: el top 5 de categorías del día pasó de 33,129 ms (`Parallel Seq Scan on pedido`) a 0,037 ms leyendo `resumen_venta_diaria_categoria`, mantenida por disparadores. La auditoría de desincronización devuelve 0 filas. El informe es `tp6/DB_Mateo_Algañaraz.pdf`.
+
+## TP7 - Unidad 5
+
+La guía está en `tp7/README.md` y la bitácora de IA en `tp7/BITACORA.md`. Parte A: ocho roles con dueño sin login y permisos de columna, verificados con `\du`, `role_table_grants` y una comparación esperado vs. real (42 = 42). Parte B: auditoría nativa activada y probada; el log resultó ser un activo sensible porque guarda contraseñas probadas. Parte C: en el simulacro, los cinco intentos de escalamiento fallaron, y la reconstrucción de la IA se contrastó línea por línea con lo ejecutado. Parte D: `usuario_anon` reproduce los mismos agregados que `usuario` (`EXCEPT` 0 y 0). El informe es `tp7/DB_Mateo_Algañaraz.pdf`.
 
 ## Como agregar los proximos trabajos practicos
 
