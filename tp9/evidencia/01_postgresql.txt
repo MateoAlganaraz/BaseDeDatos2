@@ -1,0 +1,161 @@
+Pager usage is off.
+== 1. Tablas y claves que intervienen ==
+     tabla      |    tipo     |        restriccion         |                    columnas                    | referencia 
+----------------+-------------+----------------------------+------------------------------------------------+------------
+ categoria      | UNIQUE      | categoria_nombre_key       | nombre                                         | 
+ categoria      | PRIMARY KEY | categoria_pkey             | id_categoria                                   | 
+ cliente        | PRIMARY KEY | cliente_pkey               | id_cliente                                     | 
+ detalle_pedido | PRIMARY KEY | pk_detalle_pedido          | id_pedido, id_pedido, id_producto, id_producto | 
+ detalle_pedido | FOREIGN KEY | fk_detalle_pedido_pedido   | id_pedido                                      | pedido
+ detalle_pedido | FOREIGN KEY | fk_detalle_pedido_producto | id_producto                                    | producto
+ pedido         | PRIMARY KEY | pedido_pkey                | id_pedido                                      | 
+ pedido         | FOREIGN KEY | fk_pedido_cliente          | id_cliente                                     | cliente
+ producto       | PRIMARY KEY | producto_pkey              | id_producto                                    | 
+ producto       | FOREIGN KEY | fk_producto_categoria      | id_categoria                                   | categoria
+(10 rows)
+
+psql:consultas_postgresql.sql:40: NOTICE:  schema "nosql_lab" already exists, skipping
+CREATE SCHEMA
+psql:consultas_postgresql.sql:41: NOTICE:  drop cascades to view nosql_lab.documento_pedido
+DROP TABLE
+CREATE TABLE
+INSERT 0 12
+== 2. Pedidos seleccionados ==
+ id_pedido |                      motivo                      |         fecha          |  forma_pago   | estado  
+-----------+--------------------------------------------------+------------------------+---------------+---------
+         1 | vigente, sin el producto 3373                    | 2026-10-25 02:11:59-03 | TARJETA       | VIGENTE
+         2 | vigente, sin el producto 3373                    | 2026-10-24 04:23:58-03 | TRANSFERENCIA | VIGENTE
+         3 | vigente, sin el producto 3373                    | 2026-10-23 06:35:57-03 | EFECTIVO      | VIGENTE
+         7 | anulado (borrado lógico)                         | 2026-10-19 15:23:53-03 | TARJETA       | ANULADO
+        57 | anulado (borrado lógico)                         | 2026-08-30 05:23:03-03 | EFECTIVO      | ANULADO
+       107 | anulado (borrado lógico)                         | 2026-07-11 19:22:13-03 | TRANSFERENCIA | ANULADO
+      2118 | vigente, contiene el producto 3373               | 2026-01-06 03:00:42-03 | EFECTIVO      | VIGENTE
+      5355 | vigente, contiene el producto 3373               | 2026-02-23 19:30:45-03 | EFECTIVO      | VIGENTE
+      5644 | vigente, contiene el producto 3373               | 2026-05-10 07:13:56-03 | TARJETA       | VIGENTE
+      8881 | vigente, contiene el producto 3373               | 2026-06-27 23:43:59-03 | TARJETA       | VIGENTE
+     12118 | vigente, contiene el producto 3373               | 2026-08-14 16:14:02-03 | TARJETA       | VIGENTE
+    598881 | vigente, la línea del producto 3373 está anulada | 2026-01-18 11:50:39-03 | EFECTIVO      | VIGENTE
+(12 rows)
+
+CREATE VIEW
+== 3. Ejemplo de documento (pedido 2118) ==
+                     jsonb_pretty                      
+-------------------------------------------------------
+ {                                                    +
+     "_id": 2118,                                     +
+     "fecha": "2026-01-06T06:00:42.000Z",             +
+     "total": "11144.00",                             +
+     "estado": "VIGENTE",                             +
+     "lineas": [                                      +
+         {                                            +
+             "anulada": false,                        +
+             "cantidad": 3,                           +
+             "producto": "TP6_PRODUCTO_03373",        +
+             "subtotal": "3753.00",                   +
+             "categoria": "Almacén",                  +
+             "id_producto": 3373,                     +
+             "precio_unitario": "1251.00"             +
+         },                                           +
+         {                                            +
+             "anulada": false,                        +
+             "cantidad": 2,                           +
+             "producto": "TP6_PRODUCTO_05454",        +
+             "subtotal": "4496.00",                   +
+             "categoria": "Almacén",                  +
+             "id_producto": 5454,                     +
+             "precio_unitario": "2248.00"             +
+         },                                           +
+         {                                            +
+             "anulada": false,                        +
+             "cantidad": 1,                           +
+             "producto": "TP6_PRODUCTO_07535",        +
+             "subtotal": "2895.00",                   +
+             "categoria": "Mascotas",                 +
+             "id_producto": 7535,                     +
+             "precio_unitario": "2895.00"             +
+         }                                            +
+     ],                                               +
+     "cliente": {                                     +
+         "email": "tp6_cliente_05659@example.invalid",+
+         "nombre": "Cliente05659",                    +
+         "apellido": "TP605659",                      +
+         "id_cliente": 5659                           +
+     },                                               +
+     "anulado_en": null,                              +
+     "forma_pago": "EFECTIVO",                        +
+     "cantidad_lineas_vigentes": 3                    +
+ }
+(1 row)
+
+== 4.b Pedidos con estado ANULADO, dentro del subconjunto migrado ==
+ id_pedido 
+-----------
+         7
+        57
+       107
+(3 rows)
+
+== 4.c Pedidos que contienen el producto 3373 en una línea vigente, dentro del subconjunto ==
+ id_pedido 
+-----------
+      2118
+      5355
+      5644
+      8881
+     12118
+(5 rows)
+
+== 4. Resumen para la tabla de verificación (subconjunto) ==
+                   consulta                   | cantidad |                  ids                  
+----------------------------------------------+----------+---------------------------------------
+ b) estado ANULADO                            |        3 | 7, 57, 107
+ c') producto 3373 incluyendo líneas anuladas |        6 | 12118, 2118, 5355, 5644, 598881, 8881
+ c) producto 3373 (línea vigente)             |        5 | 12118, 2118, 5355, 5644, 8881
+(3 rows)
+
+== 4. Las mismas consultas sobre TODA la base (explica la diferencia de alcance) ==
+            consulta             | cantidad 
+---------------------------------+----------
+ b) estado ANULADO, toda la base |    12000
+ c) producto 3373, toda la base  |      239
+(2 rows)
+
+== 5. Regla 1: total = suma de subtotales de líneas vigentes, con precio histórico ==
+ id_pedido | total_historico | total_con_precio_actual 
+-----------+-----------------+-------------------------
+         7 |        46524.00 |                46593.04
+      5355 |        44182.00 |                45361.12
+         3 |        42340.00 |                42340.00
+       107 |        30574.00 |                30574.00
+        57 |        18901.00 |                18901.00
+      8881 |        15247.00 |                16466.76
+         1 |        13727.00 |                14825.16
+      2118 |        11144.00 |                11803.92
+     12118 |        11144.00 |                11803.92
+         2 |         9268.00 |                 9268.00
+      5644 |         1251.00 |                 1351.08
+    598881 |               0 |                       0
+(12 rows)
+
+== 5. Regla 2: un producto aparece una sola vez por pedido (PK compuesta) y cantidad/precio > 0 (esperado 0 y 0) ==
+                  control                  | filas 
+-------------------------------------------+-------
+ productos repetidos en un pedido          |     0
+ líneas con cantidad o precio no positivos |     0
+(2 rows)
+
+== 5. Referencia para d): distribución de totales del subconjunto ==
+ pedidos | minimo | mediana |   p75   |  maximo  
+---------+--------+---------+---------+----------
+      12 |   0.00 |   14487 | 33515.5 | 46524.00
+(1 row)
+
+== 5. d) en PostgreSQL (control): pedidos con total > 20000 ==
+ id_pedido |  total   | estado  
+-----------+----------+---------
+         7 | 46524.00 | ANULADO
+      5355 | 44182.00 | VIGENTE
+         3 | 42340.00 | VIGENTE
+       107 | 30574.00 | ANULADO
+(4 rows)
+
