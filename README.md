@@ -17,6 +17,7 @@ La base y los scripts estan preparados para PostgreSQL. Ningun archivo afirma qu
 | TP7 - Unidad 5 | Administración y seguridad | Roles de mínimo privilegio verificados, auditoría con log del servidor, simulacro de incidente reconstruido con IA, `usuario_anon` y bitácora de IA. | Ejecutado en `food_store_tp7_lab` (PostgreSQL 16.15); evidencia en `tp7/evidencia/` y `tp7/docs/`. |
 | TP8 - Unidad 6 | Mantenimiento, respaldo y recuperación | Plan de mantenimiento, respaldo `pg_dump -Fc` automatizable (.sh y .ps1), chequeo de salud, mantenimiento justificado y simulacro de restauración con RPO/RTO. | Ejecutado sobre `foodstore` y `foodstore_restore_test` (PostgreSQL 16.15); evidencia en `tp8/evidencia/`. |
 | TP9 - Unidad 7 | NoSQL y nuevas formas de almacenamiento | Pedidos y detalles migrados a MongoDB con validador, consultas comparadas con PostgreSQL y contraste de recomendaciones de IA. | Ejecutado en PostgreSQL 16.15 y MongoDB 8.0.4; evidencia en `tp9/evidencia/`. |
+| TP10 - Unidad 8 (TP N.º 8 de la cátedra) | SQLite en la tablet y sincronización | Base de la tablet en SQLite (STRICT), instantánea `v_snapshot_movil` con lápidas, semáforo de sincronización, casos C1 a C7, mapa de los tres motores, plan de mantenimiento, code review con IA, spec, bitácora y DUIA. | Ejecutado en PostgreSQL 16.15 (`foodstore_tp10_lab`, copia de `foodstore`) y SQLite 3.50.4; evidencia en `tp10/evidencia/`. |
 | TPI - Primera entrega parcial | Integración Unidades 1, 2 y 3 | Modelo ER, mapeo relacional, 3FN/BCNF, migración final, PL/pgSQL, triggers, borrado lógico y evidencia de concurrencia. | Ejecutado en `food_store_tpi_verificacion_final`; evidencia real en `tpi/evidencia/20260923_214500/`. |
 
 ## Estructura
@@ -34,6 +35,7 @@ La base y los scripts estan preparados para PostgreSQL. Ningun archivo afirma qu
 - `tp7/`: Unidad 5, estructura `food-store-tp-u5/` de la consigna (`sql/`, `docs/`, `BITACORA.md`), orquestador, anonimizador, evidencia, variantes DBeaver e informe PDF.
 - `tp8/`: Unidad 6, `SPEC_U6.md`, scripts de respaldo y restauración (.sh y .ps1), `health_check.sql`, `maintenance.sql`, evidencia e `informe_u6.pdf`.
 - `tp9/`: Unidad 7, `consultas_mongodb.js`, `consultas_postgresql.sql` (con variante DBeaver), migración `insertMany`, pruebas de afirmaciones de IA, evidencia con reverificación desde cero e `informe_u7.pdf`.
+- `tp10/`: Unidad 8 (TP N.º 8 de la cátedra), con la estructura `food-store/` de la consigna: `movil/` (SQLite), `servidor/` (PostgreSQL), `docs/` (informe, spec, bitácora y DUIA), `run_tp10.sh` y evidencia.
 - `tpi/`: scripts de integración, modelo ER, normalización, checklist, informe técnico y evidencia del TPI.
 
 ## Ejecucion segura
@@ -47,6 +49,8 @@ La base y los scripts estan preparados para PostgreSQL. Ningun archivo afirma qu
 ## TP2
 
 El TP2 se ejecuta siguiendo el orden descripto en los documentos de raiz: protocolo, restricciones, pruebas reversibles, laboratorio de concurrencia en dos sesiones y actualizacion de los informes y DUIA con la evidencia real.
+
+> **Nota (code review del TP N.º 8, hallazgo H2):** `sql/01_restricciones_integridad.sql` se escribió para el esquema anterior al TPI. Sobre una base creada con `schema.sql` falla con `constraint "ck_producto_precio_positivo" … already exists`, porque `schema.sql` ya incorporó esas tres reglas. No hace falta ejecutarlo en las bases nuevas.
 
 ## TP3
 
@@ -93,6 +97,10 @@ La guía está en `tp8/README.md`. El respaldo de `foodstore` (18 MB, formato cu
 ## TP9 - Unidad 7
 
 La guía está en `tp9/README.md`. Se migraron 12 pedidos con 34 líneas a MongoDB, con el cliente y las líneas embebidos, precios históricos en Decimal128 y un validador `$jsonSchema` + `$expr`. Las consultas b) y c) coinciden con PostgreSQL. La c) coincide después de corregirla con `$elemMatch`: la primera versión incluía una línea anulada. La conclusión es mantener PostgreSQL como sistema de registro. El informe es `tp9/informe_u7.pdf`.
+
+## TP10 - Unidad 8
+
+La guía está en `tp10/README.md`. La tablet guarda una copia del catálogo en SQLite y arma borradores sin señal. El semáforo compara cada solicitud pendiente con la instantánea del servidor. Resultados: C2 da `CONFLICTO` y, tras aceptar el precio, `SIMULADO_APROBADO`; C3 y C4 dan `RECHAZADO`; C5 da `SIMULADO_APROBADO`; C6 rechaza el UUID repetido y no reevalúa. El control final muestra 600.000 pedidos y el mismo stock: la tablet no tocó el servidor. El informe es `tp10/docs/informe.pdf`.
 
 ## Como agregar los proximos trabajos practicos
 
