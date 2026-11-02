@@ -1,0 +1,20 @@
+
+==================== 1.b Esquema de la tablet ====================
+3.50.4 2025-07-30 19:33:53 4d8adfb30e03f9cf27f800a2c1ba3c48fb4ca1b08b0f5ed59a4d5ecbf45e20a3 (64-bit)
+$ sqlite3 foodstore_movil.db < schema_sqlite.sql
+schema_sqlite.sql|3.50.4|1|5
+CREATE TABLE producto_cache (
+    id              INTEGER PRIMARY KEY,                 -- producto.id_producto del servidor
+    nombre          TEXT    NOT NULL CHECK (length(trim(nombre)) > 0),
+    precio_centavos INTEGER NOT NULL CHECK (precio_centavos >= 0),   -- entero: sin errores de redondeo
+    stock_visto     INTEGER NOT NULL CHECK (stock_visto >= 0),       -- lo que había al copiar; no es una reserva
+    disponible      INTEGER NOT NULL CHECK (disponible IN (0, 1)),
+    eliminado       INTEGER NOT NULL CHECK (eliminado IN (0, 1)),
+    copiado_en      TEXT    NOT NULL                     -- fecha de la instantánea del servidor
+) STRICT;
+
+==================== 2.a Importación de la instantánea en snapshot_servidor y carga de producto_cache ====================
+$ sqlite3 foodstore_movil.db < cargar_snapshot.sql   (ejecuta .import --csv --skip 1 servidor_snapshot.csv snapshot_servidor)
+paso                 filas_snapshot  filas_cache  disponibles  lapidas  fecha_copia         
+-------------------  --------------  -----------  -----------  -------  --------------------
+instantánea cargada  10000           10000        9600         0        2026-11-02T14:22:53Z

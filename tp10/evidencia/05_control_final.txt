@@ -1,0 +1,31 @@
+
+==================== Control final: pedidos y stock del servidor contra la línea base ====================
+$ psql -d foodstore_tp10_lab -f servidor/99_control_final.sql
+   control   |  antes  |  ahora  | sin_cambios 
+-------------+---------+---------+-------------
+ pedidos     |  600000 |  600000 | t
+ detalles    | 1500000 | 1500000 | t
+ stock total | 3195000 | 3195000 | t
+(3 rows)
+
+                    control                    | filas 
+-----------------------------------------------+-------
+ productos con stock distinto de la línea base |     0
+(1 row)
+
+ id_producto | precio_lista | stock | dado_de_baja 
+-------------+--------------+-------+--------------
+         101 |      4028.85 |   469 | f
+         106 |      3872.00 |   164 | f
+         109 |       633.00 |   171 | t
+         110 |       561.60 |   190 | f
+         111 |      2057.00 |   259 | f
+(5 rows)
+
+
+==================== Resumen de la cola de la tablet ====================
+estado             solicitudes
+-----------------  -----------
+CONFLICTO          1          
+RECHAZADO          2          
+SIMULADO_APROBADO  3          

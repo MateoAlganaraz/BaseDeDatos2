@@ -1,0 +1,35 @@
+
+==================== 0. Copia del servidor: foodstore -> foodstore_tp10_lab ====================
+$ dropdb --if-exists foodstore_tp10_lab && createdb -T foodstore foodstore_tp10_lab
+PostgreSQL 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit
+
+==================== 2.a Vista v_snapshot_movil y línea base ====================
+$ psql -d foodstore_tp10_lab -f servidor/01_v_snapshot_movil.sql
+CREATE SCHEMA
+CREATE VIEW
+COMMENT
+psql:/home/claude/basededatos2/tp10/servidor/01_v_snapshot_movil.sql:34: NOTICE:  table "linea_base_stock" does not exist, skipping
+DROP TABLE
+psql:/home/claude/basededatos2/tp10/servidor/01_v_snapshot_movil.sql:35: NOTICE:  table "linea_base" does not exist, skipping
+DROP TABLE
+CREATE TABLE
+INSERT 0 1
+SELECT 10000
+ALTER TABLE
+      objeto      | filas | disponibles | lapidas 
+------------------+-------+-------------+---------
+ v_snapshot_movil | 10000 |        9600 |       0
+(1 row)
+
+          tomada_en           | pedidos | detalles | stock_total 
+------------------------------+---------+----------+-------------
+ 2026-11-02 14:22:53.12852+00 |  600000 |  1500000 |     3195000
+(1 row)
+
+
+==================== 2.a Exportación de la instantánea a movil/servidor_snapshot.csv ====================
+$ psql -d foodstore_tp10_lab -c "\copy (SELECT * FROM movil.v_snapshot_movil ORDER BY id) TO 'servidor_snapshot.csv' CSV HEADER"
+filas exportadas: 10000
+id,nombre,precio_centavos,stock,disponible,eliminado,copiado_en
+1,TP6_PRODUCTO_00001,168700,169,t,f,2026-11-02T14:22:53Z
+2,TP6_PRODUCTO_00002,127400,138,t,f,2026-11-02T14:22:53Z

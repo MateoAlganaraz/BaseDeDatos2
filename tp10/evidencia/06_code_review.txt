@@ -1,0 +1,27 @@
+### H1 (U7) tp9/consultas_postgresql.sql §1 - versión de main vs. versión corregida (tp-u7)
+     tabla      |    tipo     |        restriccion         |                    columnas                    | referencia 
+ detalle_pedido | PRIMARY KEY | pk_detalle_pedido          | id_pedido, id_pedido, id_producto, id_producto | 
+ detalle_pedido | PRIMARY KEY | pk_detalle_pedido          | id_pedido, id_producto | 
+
+### H2 (U1) sql/01_restricciones_integridad.sql sobre una base creada con schema.sql (dentro de BEGIN ... ROLLBACK)
+(0 rows)
+(0 rows)
+(0 rows)
+ERROR:  constraint "ck_producto_precio_positivo" for relation "producto" already exists
+ERROR:  current transaction is aborted, commands ignored until end of transaction block
+
+### H3 (U8) v_snapshot_movil: ¿el cast (precio_lista * 100)::bigint pierde centavos frente a round()?
+ productos | con_fraccion_de_centavo | cast_distinto_de_round 
+-----------+-------------------------+------------------------
+     10000 |                       0 |                      0
+(1 row)
+
+ data_type | numeric_precision | numeric_scale 
+-----------+-------------------+---------------
+ numeric   |                12 |             2
+(1 row)
+
+
+### H4 (U8) cargar_snapshot.sql: ¿recargar producto_cache con DELETE + INSERT en lugar de UPSERT?
+Error: stepping, FOREIGN KEY constraint failed (19)
+1|7

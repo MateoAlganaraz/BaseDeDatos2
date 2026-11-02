@@ -1,0 +1,16 @@
+### 3.b Respaldo de la tablet al cierre de la feria y prueba de restauración
+$ sqlite3 foodstore_movil.db ".backup respaldo_tablet.db"
+respaldo creado: 1.2M
+$ sqlite3 respaldo_tablet.db "PRAGMA integrity_check; PRAGMA foreign_key_check;"
+ok
+(foreign_key_check sin filas = sin referencias rotas)
+$ comparación de la cola original y la restaurada
+CONFLICTO|1 RECHAZADO|2 SIMULADO_APROBADO|3 
+CONFLICTO|1 RECHAZADO|2 SIMULADO_APROBADO|3 
+
+### 3.b Solicitudes que el responsable revisa al cierre (CONFLICTO o RECHAZADO)
+solicitud_uuid                        estado     motivo                                                       usuario          forma_pago
+------------------------------------  ---------  -----------------------------------------------------------  ---------------  ----------
+c2000000-0000-4000-9000-000000000001  CONFLICTO  producto 101: precio visto 383700, actual 402885 (centavos)  tablet-feria-01  EFECTIVO  
+c3000000-0000-4000-9000-000000000001  RECHAZADO  producto 106: pide 170, stock 164                            tablet-feria-01  TARJETA   
+c4000000-0000-4000-9000-000000000001  RECHAZADO  producto 109: dado de baja                                   tablet-feria-01  EFECTIVO  
