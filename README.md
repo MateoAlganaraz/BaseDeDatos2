@@ -33,7 +33,7 @@ La base y los scripts estan preparados para PostgreSQL. Ningun archivo afirma qu
 - `tp6/`: Unidad 4, FNBC (`tp_fnbc_control_lote.sql`), desnormalización controlada (`tp_desnormalizacion_top_categorias.sql`), carga de laboratorio, mediciones, variantes DBeaver, evidencia e informe PDF.
 - `tp7/`: Unidad 5, estructura `food-store-tp-u5/` de la consigna (`sql/`, `docs/`, `BITACORA.md`), orquestador, anonimizador, evidencia, variantes DBeaver e informe PDF.
 - `tp8/`: Unidad 6, `SPEC_U6.md`, scripts de respaldo y restauración (.sh y .ps1), `health_check.sql`, `maintenance.sql`, evidencia e `informe_u6.pdf`.
-- `tp9/`: Unidad 7, `consultas_mongodb.js`, `consultas_postgresql.sql`, migración `insertMany`, pruebas de afirmaciones de IA, evidencia e `informe_u7.pdf`.
+- `tp9/`: Unidad 7, `consultas_mongodb.js`, `consultas_postgresql.sql` (con variante DBeaver), migración `insertMany`, pruebas de afirmaciones de IA, evidencia con reverificación desde cero e `informe_u7.pdf`.
 - `tpi/`: scripts de integración, modelo ER, normalización, checklist, informe técnico y evidencia del TPI.
 
 ## Ejecucion segura

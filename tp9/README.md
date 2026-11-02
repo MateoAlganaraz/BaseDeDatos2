@@ -18,7 +18,8 @@ Archivos de apoyo:
 | `pruebas_afirmaciones_ia.js` y `scripts/probar_afirmaciones.sh` | Laboratorio de las dos afirmaciones de la IA (Consigna 7). |
 | `lectura_pedido_completo.sql` / `.js` | Costo de leer un pedido completo en cada motor. |
 | `ia/` | Prompt y respuesta completa de la IA. |
-| `evidencia/` | Salidas completas de cada ejecución. |
+| `dbeaver/` | `consultas_postgresql.sql` sin metacomandos de `psql`, para ejecutar en DBeaver. |
+| `evidencia/` | Salidas completas de cada ejecución. `05_reverificacion.txt` es la reejecución completa desde una base nueva (ver "Revisión"). |
 
 ## Modelo
 
@@ -46,6 +47,23 @@ La IA recomendó mantener PostgreSQL. De sus afirmaciones se contrastaron dos:
 - **"Las transacciones multi-documento requieren un replica set": correcta.** La transacción falló en el servidor standalone (código 20) y se confirmó en un replica set de un nodo.
 
 Conclusión: mantener PostgreSQL como sistema de registro.
+
+## Revisión contra la consigna
+
+Se revisó el TP consigna por consigna y se reprodujo desde cero el 2026-11-02: base `foodstore` nueva (`schema.sql`, `tp6/00_carga_laboratorio.sql` y `tp8/sql/01_simular_actividad.sql`), PostgreSQL 16.15, MongoDB 8.0.4 y mongosh 2.3.8. La salida completa está en [`evidencia/05_reverificacion.txt`](evidencia/05_reverificacion.txt).
+
+| Consigna | Dónde se cumple | Resultado de la revisión |
+|---|---|---|
+| 1. Subconjunto, tablas, claves y esquema documental | `consultas_postgresql.sql` §1; informe §1 | Corregido: la consulta de claves repetía las columnas de la PK compuesta de `detalle_pedido`. |
+| 2. Base, colección y migración de 5 o más pedidos | `consultas_mongodb.js`, `migracion_mongodb.js` | Reproducido: 12 documentos y 34 líneas. El `insertMany()` regenerado es idéntico salvo las fechas. |
+| 3. Dos reglas de integridad y justificación del embebido | Validador `$jsonSchema` + `$expr`; informe §2 | Reproducido: los tres documentos inválidos se rechazan con el código 121. |
+| 4. Consultas a) a d) | `consultas_mongodb.js` §4 | Reproducido, sin diferencias. |
+| 5. b) y c) en PostgreSQL y tabla comparativa | `consultas_postgresql.sql` §4; informe §3 | Reproducido: 3 = 3 y 5 = 5 con los mismos id. Los id de c) del resumen ahora se ordenan como números. |
+| 6. Consulta a la IA con modelo actual, pedidos completos y coherencia | `ia/prompt_comparacion.md` | El prompt menciona los tres puntos pedidos. |
+| 7. Dos afirmaciones contrastadas y conclusión de hasta 200 palabras | `pruebas_afirmaciones_ia.js`; informe §4 y §5 | Reproducido: error 20 en standalone y transacción confirmada en el replica set. La conclusión tiene 161 palabras y tres criterios. |
+| Entrega | `informe_u7.pdf` | 3 páginas, con el integrante y el repositorio identificados. |
+
+Además se agregó la variante DBeaver que piden las reglas del repositorio (`AGENTS.md`). Las correcciones no cambian ninguna cifra del informe, que por eso no se regeneró. Las salidas `01` a `04` se conservan como la evidencia original.
 
 ## Reproducir
 

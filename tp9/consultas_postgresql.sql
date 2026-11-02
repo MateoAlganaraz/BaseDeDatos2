@@ -1,5 +1,7 @@
 \set ON_ERROR_STOP on
 \pset pager off
+-- Misma zona horaria que la carga de laboratorio (tp6/00_carga_laboratorio.sql).
+SET TimeZone = 'America/Argentina/Buenos_Aires';
 
 -- =====================================================================
 -- Mateo Algañaraz - Base de Datos II - 2026
@@ -20,18 +22,21 @@
 -- =====================================================================
 
 \echo '== 1. Tablas y claves que intervienen =='
+-- La tabla referenciada se busca en una subconsulta: unirla con constraint_column_usage
+-- multiplicaba las filas y repetía las columnas de la PK compuesta de detalle_pedido.
 SELECT tc.table_name AS tabla, tc.constraint_type AS tipo, tc.constraint_name AS restriccion,
        string_agg(kcu.column_name, ', ' ORDER BY kcu.ordinal_position) AS columnas,
-       max(ccu.table_name) FILTER (WHERE tc.constraint_type = 'FOREIGN KEY') AS referencia
+       (SELECT max(ccu.table_name)
+          FROM information_schema.constraint_column_usage ccu
+         WHERE ccu.constraint_name = tc.constraint_name AND ccu.table_schema = tc.table_schema
+           AND tc.constraint_type = 'FOREIGN KEY') AS referencia
 FROM information_schema.table_constraints tc
 JOIN information_schema.key_column_usage kcu
   ON kcu.constraint_name = tc.constraint_name AND kcu.table_schema = tc.table_schema
-LEFT JOIN information_schema.constraint_column_usage ccu
-  ON ccu.constraint_name = tc.constraint_name AND ccu.table_schema = tc.table_schema
 WHERE tc.table_schema = 'public'
   AND tc.table_name IN ('pedido', 'detalle_pedido', 'cliente', 'producto', 'categoria')
   AND tc.constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY', 'UNIQUE')
-GROUP BY 1, 2, 3
+GROUP BY tc.table_name, tc.constraint_type, tc.constraint_name, tc.table_schema
 ORDER BY 1, 2 DESC, 3;
 
 -- ---------------------------------------------------------------------
@@ -128,13 +133,14 @@ ORDER BY d.id_pedido;
 SELECT 'b) estado ANULADO' AS consulta, count(*) AS cantidad, string_agg(id_pedido::text, ', ' ORDER BY id_pedido) AS ids
 FROM pedido p JOIN nosql_lab.pedido_migrado m USING (id_pedido) WHERE p.deleted_at IS NOT NULL
 UNION ALL
-SELECT 'c) producto 3373 (línea vigente)', count(DISTINCT d.id_pedido), string_agg(DISTINCT d.id_pedido::text, ', ')
-FROM detalle_pedido d JOIN nosql_lab.pedido_migrado m USING (id_pedido)
-WHERE d.id_producto = 3373 AND d.deleted_at IS NULL
+-- Los id se agregan desde un DISTINCT para ordenarlos como números (igual que en MongoDB).
+SELECT 'c) producto 3373 (línea vigente)', count(*), string_agg(id_pedido::text, ', ' ORDER BY id_pedido)
+FROM (SELECT DISTINCT d.id_pedido FROM detalle_pedido d JOIN nosql_lab.pedido_migrado m USING (id_pedido)
+      WHERE d.id_producto = 3373 AND d.deleted_at IS NULL) x
 UNION ALL
-SELECT 'c'') producto 3373 incluyendo líneas anuladas', count(DISTINCT d.id_pedido), string_agg(DISTINCT d.id_pedido::text, ', ')
-FROM detalle_pedido d JOIN nosql_lab.pedido_migrado m USING (id_pedido)
-WHERE d.id_producto = 3373
+SELECT 'c'') producto 3373 incluyendo líneas anuladas', count(*), string_agg(id_pedido::text, ', ' ORDER BY id_pedido)
+FROM (SELECT DISTINCT d.id_pedido FROM detalle_pedido d JOIN nosql_lab.pedido_migrado m USING (id_pedido)
+      WHERE d.id_producto = 3373) x
 ORDER BY 1;
 
 \echo '== 4. Las mismas consultas sobre TODA la base (explica la diferencia de alcance) =='
